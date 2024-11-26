@@ -41,6 +41,7 @@
 $route['default_controller'] = "welcome";
 $route['404_override'] = '';
 
+$route['ticketgenerator/generate_ticket'] = "TicketGenerator/generateTicket";
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

@@ -24,15 +24,16 @@ class Welcome extends CI_Controller
 
         $this->load->view('welcome_message');
 
-        /*$this->load->library('fpdf');
+        $params = array('P', 'mm', array(100,150));
+        $this->load->library('fpdf',$params);
 
         $FPDF = $this->fpdf;
         //$this->$fpdf = new FPDF();
         $FPDF->AddPage();
         $FPDF->SetFont('Arial', 'B', 16);
-        $FPDF->Cell(40, 10, 'Hello World!');
+        $FPDF->Cell(40, 10, 'Hello World Aquiles!');
         $FPDF->Output();
-*/
+
 
 
     }
