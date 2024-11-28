@@ -29,8 +29,9 @@ class TicketGenerator extends CI_Controller
 
         $this->section_1();
         $this->section_2();
+        $this->set_products();
         $this->section_3();
-
+        $this->section_4();
 
         $this->FPDF->Output('I', 'report.pdf');
 
@@ -185,115 +186,181 @@ class TicketGenerator extends CI_Controller
         $test2['spacer'] = 0;
         $test2['text'] = array();
 
-            $test1['text'][0] = $sample_text;
-            $test2['text'][0] = '';
+        $test1['text'][0] = $sample_text;
+        $test2['text'][0] = '';
 
-        $this->FPDF->SetXY(45,63);
+        $this->FPDF->SetXY(45, 63);
         $this->FPDF->SetFont('Helvetica', 'B', 30);
-        $this->FPDF->MultiCellBltArray(60,46,$test1);
+        $this->FPDF->MultiCellBltArray(60, 46, $test1);
 
         $this->FPDF->SetFont('Helvetica', '', 20);
-        $this->FPDF->Text(90,88,'&');
+        $this->FPDF->Text(90, 88, '&');
         $this->FPDF->SetFont('Helvetica', 'B', 30);
-        $this->FPDF->Text(96,89,'BUTTER');
+        $this->FPDF->Text(96, 89, 'BUTTER');
 
-        $this->FPDF->SetXY(140,81);
-        $this->FPDF->MultiCellBltArray(10,10,$test2);
+        $this->FPDF->SetXY(140, 81);
+        $this->FPDF->MultiCellBltArray(10, 10, $test2);
 
-        $this->FPDF->SetXY(140,90);
+        $this->FPDF->SetXY(140, 90);
         $this->FPDF->Line(45, 95, 143, 95);
 
         $this->FPDF->SetFont('Helvetica', '', 10);
         //$this->FPDF->SetXY(140,100);
-        $this->FPDF->Text(53,103,'32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
-        $this->FPDF->Text(50,108,'BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
+        $this->FPDF->Text(53, 103, '32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
+        $this->FPDF->Text(50, 108, 'BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
 
         $this->FPDF->SetLineWidth(2);
         $this->FPDF->Line(40, 114, 150, 114);
         $this->FPDF->SetFont('Helvetica', '', 8);
-        $this->FPDF->Text(40,119,'ORDER: ');
+        $this->FPDF->Text(40, 119, 'ORDER: ');
         $this->FPDF->SetFont('Helvetica', 'B', 8);
-        $this->FPDF->Text(52,119,'2049');
+        $this->FPDF->Text(52, 119, '2049');
 
-        $this->FPDF->Image('assets/img/banner1.png',65,117);
+        $this->FPDF->Image('assets/img/banner1.png', 65, 117);
 
         $this->FPDF->SetFont('Helvetica', 'B', 40);
-        $this->FPDF->Text(80,140,$this->pound_sterling.'5.14');
+        $this->FPDF->Text(80, 140, $this->pound_sterling . '5.14');
         $this->FPDF->SetFont('Helvetica', '', 10);
-        $this->FPDF->Text(73,153,'INCLUDING VATS OF ');
+        $this->FPDF->Text(73, 153, 'INCLUDING VATS OF ');
         $this->FPDF->SetFont('Helvetica', 'BU', 10);
-        $this->FPDF->Text(110,153,$this->pound_sterling.'1.03');
+        $this->FPDF->Text(110, 153, $this->pound_sterling . '1.03');
 
-        $this->FPDF->Image('assets/img/banner2.png',37,147);
+        $this->FPDF->Image('assets/img/banner2.png', 37, 147);
 
         $this->FPDF->SetFont('Helvetica', '', 11);
-        $this->FPDF->SetXY(65,165);
-        $this->FPDF->Cell(180,5,'IN ','0');
+        $this->FPDF->SetXY(65, 165);
+        $this->FPDF->Cell(180, 5, 'IN ', '0');
         $this->FPDF->SetFont('Helvetica', 'B', 11);
-        $this->FPDF->SetXY(70,165);
-        $this->FPDF->Cell(190,5,'514','0');
+        $this->FPDF->SetXY(70, 165);
+        $this->FPDF->Cell(190, 5, '514', '0');
         $this->FPDF->SetFont('Helvetica', '', 11);
-        $this->FPDF->SetXY(77,165);
-        $this->FPDF->Cell(203,5,'AD, VITALIUS LEADS A ','0');
-        $this->FPDF->SetXY(58,170);
-        $this->FPDF->Cell(170,5,'REBELLION IN THE BIZANTINE EMPIRE.','0');
+        $this->FPDF->SetXY(77, 165);
+        $this->FPDF->Cell(203, 5, 'AD, VITALIUS LEADS A ', '0');
+        $this->FPDF->SetXY(58, 170);
+        $this->FPDF->Cell(170, 5, 'REBELLION IN THE BIZANTINE EMPIRE.', '0');
 
         //$this->FPDF->SetXY(60,180);
         $this->FPDF->SetFont('Helvetica', 'BU', 11);
-        $this->FPDF->Text(80,190,'AND YOU BOUGHT:',1);
+        $this->FPDF->Text(80, 190, 'AND YOU BOUGHT:', 1);
 
+        //here dynamic product fields
+
+    }
+
+    private function set_products($productos = null)
+    {
+
+        $productos = array(
+            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
+            ['nombre' => 'Chocolate Fudge Cake', 'cantidad' => 1, 'precio' => 2.35, 'hora' => '1pm', 'graph_message' => 'Which peaks in sales at '],
+            ['nombre' => 'Chocolate Fudge Cake', 'cantidad' => 1, 'precio' => 2.35, 'hora' => '1pm', 'graph_message' => 'Which peaks in sales at '],
+            ['nombre' => 'Chocolate Fudge Cake', 'cantidad' => 1, 'precio' => 2.35, 'hora' => '1pm', 'graph_message' => 'Which peaks in sales at ']
+        );
+
+        // ,
 
         $this->FPDF->SetLineWidth(0.5);
-        $this->FPDF->SetXY(40,195);
-        $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->Cell(3,5,'1',0);
+        $this->FPDF->SetXY(40, 195);
         $this->FPDF->SetFont('Helvetica', '', 12);
-        $this->FPDF->Cell(56,5,'@ '.$this->pound_sterling.'2.79',0,0);
-        $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->Cell(3,5,'1',0);
-        $this->FPDF->SetFont('Helvetica', '', 12);
-        $this->FPDF->Cell(0,5,'@ '.$this->pound_sterling.'2.35',0,1);
 
-        $this->FPDF->Image('assets/img/banner3.png',40,200);
+        $x_min = 35;
+        $x_max = 144;
+        $x_middle = $x_max / 2;
 
-        $this->FPDF->SetXY(40,215);
-        $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->Cell(60,5,'Ham & Cheese Baguette',0);
-        $this->FPDF->Cell(0,5,'Chocolate Fudge Cake',0,1);
-        $this->FPDF->SetXY(40,220);
-        $this->FPDF->SetFont('Helvetica', '', 10);
-        $this->FPDF->Cell(60,5,'Which often sells out by 2pm.',0);
-        $this->FPDF->Cell(0,5,'Which peaks in sales at 1pm',0,1);
+        $x_block_size = 57;
+        $y_block_size = 17;
 
-        $this->FPDF->Image('assets/img/banner4.png',36,227);
+        for ($i = 0; $i < count($productos); $i++) {
+            if (count($productos) % 2 == 0) {
 
-        $this->FPDF->SetXY(43,240);
+                if ($i % 2 == 0)
+                    $this->FPDF->SetXY($x_min + 5 + $x_block_size * $i, 195 + $y_block_size * $i);
+                else
+                    $this->FPDF->SetXY($x_min + 5 + $x_block_size * $i, 195);
+
+                $this->FPDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio'] . ' '.$i);
+
+                $this->FPDF->Image('assets/img/product_graph_1.png', $x_min + 5 + $x_block_size * $i, 200);
+
+                $this->FPDF->SetXY($x_min + 5 + $x_block_size * $i, 215);
+
+                $this->FPDF->WriteText('<' . $productos[$i]['nombre'] . '>');
+                $this->FPDF->SetXY($x_min + 5 + $x_block_size * $i, 220);
+                $this->FPDF->WriteText($productos[$i]['graph_message'] . $productos[$i]['hora']);
+
+
+            } else {
+
+                /*$this->FPDF->SetXY($x_middle ,195);
+                $this->FPDF->WriteText('<'.$productos[$i]['cantidad'].'> @ '.$this->pound_sterling.$productos[$i]['precio']);
+                $this->FPDF->Image('assets/img/product_graph_1.png',$x_middle,200);
+                $this->FPDF->SetXY($x_middle ,215);
+                $this->FPDF->WriteText('<'.$productos[$i]['nombre'].'>');
+                $this->FPDF->SetXY($x_middle ,220);
+                $this->FPDF->WriteText($productos[$i]['graph_message'] .$productos[$i]['hora'] );*/
+
+
+            }
+        }
+
+        /* $this->FPDF->SetLineWidth(0.5);
+         $this->FPDF->SetXY(40,195);
+         $this->FPDF->SetFont('Helvetica', 'B', 12);
+         $this->FPDF->Cell(3,5,'1',0);
+         $this->FPDF->SetFont('Helvetica', '', 12);
+         $this->FPDF->Cell(56,5,'@ '.$this->pound_sterling.'2.79',0,0);
+         $this->FPDF->SetFont('Helvetica', 'B', 12);
+         $this->FPDF->Cell(3,5,'1',0);
+         $this->FPDF->SetFont('Helvetica', '', 12);
+         $this->FPDF->Cell(0,5,'@ '.$this->pound_sterling.'2.35',0,1);
+
+         $this->FPDF->Image('assets/img/banner3.png',40,200);
+
+         $this->FPDF->SetXY(40,215);
+         $this->FPDF->SetFont('Helvetica', 'B', 12);
+         $this->FPDF->Cell(60,5,'Ham & Cheese Baguette',0);
+         $this->FPDF->Cell(0,5,'Chocolate Fudge Cake',0,1);
+         $this->FPDF->SetXY(40,220);
+         $this->FPDF->SetFont('Helvetica', '', 10);
+         $this->FPDF->Cell(60,5,'Which often sells out by 2pm.',0);
+         $this->FPDF->Cell(0,5,'Which peaks in sales at 1pm',0,1);
+ */
+
+    }
+
+
+    private function section_3()
+    {
+
+        $this->FPDF->Image('assets/img/banner4.png', 36, 227);
+
+        $this->FPDF->SetXY(43, 240);
         $this->FPDF->SetFont('Helvetica', '', 9);
-        $this->FPDF->Cell(50,5,'IN TOTAL, THIS ADDS UP TO: ',0,1);
+        $this->FPDF->Cell(50, 5, 'IN TOTAL, THIS ADDS UP TO: ', 0, 1);
         $this->FPDF->SetFont('Helvetica', 'B', 40);
-        $this->FPDF->SetXY(53,250);
-        $this->FPDF->Cell(50,5,'986',0,1);
+        $this->FPDF->SetXY(53, 250);
+        $this->FPDF->Cell(50, 5, '986', 0, 1);
         $this->FPDF->SetFont('Helvetica', '', 9);
-        $this->FPDF->SetXY(57,261);
-        $this->FPDF->Cell(50,5,'CALORIES,',0,1);
-        $this->FPDF->SetXY(111,254);
+        $this->FPDF->SetXY(57, 261);
+        $this->FPDF->Cell(50, 5, 'CALORIES,', 0, 1);
+        $this->FPDF->SetXY(111, 254);
         $this->FPDF->SetFont('Helvetica', 'B', 40);
-        $this->FPDF->Cell(50,5,'45%',0,1);
+        $this->FPDF->Cell(50, 5, '45%', 0, 1);
 
-        $this->FPDF->SetXY(111,262);
+        $this->FPDF->SetXY(111, 262);
         $this->FPDF->SetFont('Helvetica', '', 9);
-        $this->FPDF->Cell(50,5,'OF YOUR RDA.',0,1);
+        $this->FPDF->Cell(50, 5, 'OF YOUR RDA.', 0, 1);
 
-        $this->FPDF->Cell(20,5,'',0,0);
-        $this->FPDF->SetXY(113,242);
+        $this->FPDF->Cell(20, 5, '', 0, 0);
+        $this->FPDF->SetXY(113, 242);
         $this->FPDF->SetFont('Helvetica', '', 9);
-        $this->FPDF->Cell(50,5,'OR ROUGHLY: ',0,0);
+        $this->FPDF->Cell(50, 5, 'OR ROUGHLY: ', 0, 0);
 
         $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->SetXY(113,246);
+        $this->FPDF->SetXY(113, 246);
         $this->FPDF->TextWithRotation(75, 287.5, 'STILL AROUND LATER?', 2);
 
-        $this->FPDF->SetXY(40,250);
+        $this->FPDF->SetXY(40, 250);
         $this->FPDF->SetFont('Helvetica', '', 12);
         $this->FPDF->TextWithRotation(43, 293.2, 'The', 2);
         $this->FPDF->SetFont('Helvetica', 'B', 12);
@@ -305,7 +372,7 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetFont('Helvetica', '', 12);
         $this->FPDF->TextWithRotation(123, 291.2, 'is holding its', 2);
 
-        $this->FPDF->SetXY(40,255);
+        $this->FPDF->SetXY(40, 255);
         $this->FPDF->TextWithRotation(58, 298, 'opening night from 6pm.', 2);
         $this->FPDF->SetFont('Helvetica', 'B', 12);
         $this->FPDF->TextWithRotation(105, 296.2, '(bit.ly/6h23b)', 2);
@@ -315,33 +382,34 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->Line(35, 315, 155, 315);
         $this->FPDF->SetDash();
 
-        $this->FPDF->Image('assets/img/banner5.png',45,311);
+        $this->FPDF->Image('assets/img/banner5.png', 45, 311);
 
     }
 
-    private function section_3(){
+    private function section_4()
+    {
 
         //border
         $this->FPDF->SetLineWidth(0.5);
-        $this->FPDF->SetXY(35,315);
+        $this->FPDF->SetXY(35, 315);
         $this->FPDF->SetDrawColor(0, 0, 0);
         for ($i = 0; $i < 20; $i++) {
             $this->FPDF->Cell(120, 5, '', 'LR', 1, 1);
         }
 
-        $this->FPDF->Image('assets/img/banner6.png',35,320);
+        $this->FPDF->Image('assets/img/banner6.png', 35, 320);
 
-        $this->FPDF->SetXY(45,325);
+        $this->FPDF->SetXY(45, 325);
         $this->FPDF->Cell(30, 5, '', '', 0, 0);
         $this->FPDF->SetFont('Helvetica', '', 12);
         $this->FPDF->Cell(50, 5, 'ARE YOU A REGULAR?', '', 1, 1);
-        $this->FPDF->SetXY(35,331);
+        $this->FPDF->SetXY(35, 331);
         $this->FPDF->Cell(15, 5, '', '', 0, 0);
         $this->FPDF->SetFont('Helvetica', '', 12);
         $this->FPDF->Cell(50, 5, 'GET A PERSONALIZED RECEIPT NEXT TIME.', '', 1, 1);
 
         //checkboxes
-        $this->FPDF->SetXY(45,348);
+        $this->FPDF->SetXY(45, 348);
         $this->FPDF->SetFont('Helvetica', '', 11);
         $this->FPDF->Cell(5, 5, '', 1, 0);
         $this->FPDF->Cell(5, 5, '', 0, 0);
@@ -349,42 +417,41 @@ class TicketGenerator extends CI_Controller
 
         $this->FPDF->Cell(0, 5, '', 0, 1);
 
-        $this->FPDF->SetXY(45,355);
+        $this->FPDF->SetXY(45, 355);
         $this->FPDF->Cell(5, 5, '', 1, 0);
         $this->FPDF->Cell(5, 5, '', 0, 0);
         $this->FPDF->Cell(70, 5, 'My Google Calendar. My user name is: ', 0, 0);
-        $this->FPDF->Cell(20, 5, '',1, 0);
+        $this->FPDF->Cell(20, 5, '', 1, 0);
 
-        $this->FPDF->SetXY(45,362);
+        $this->FPDF->SetXY(45, 362);
         $this->FPDF->Cell(5, 5, '', 1, 0);
         $this->FPDF->Cell(5, 5, '', 0, 0);
         $this->FPDF->Cell(45, 5, '20% off your next meal at ', 0, 0);
         $this->FPDF->SetFont('Helvetica', 'B', 11);
-        $this->FPDF->Cell(30, 5, 'Bread & Butter',0, 1);
+        $this->FPDF->Cell(30, 5, 'Bread & Butter', 0, 1);
 
         $this->FPDF->Cell(0, 7, '', 0, 1);
 
         $this->FPDF->Cell(35, 5, '', 0, 1);
         $this->FPDF->Cell(30, 2, '', 0, 0);
         $this->FPDF->SetFont('Helvetica', '', 14);
-        $this->FPDF->Cell(37, 5, 'CUSTOMER ID:',0, 0);
-        $this->FPDF->Cell(45, 5, '046348632',0, 0);
+        $this->FPDF->Cell(37, 5, 'CUSTOMER ID:', 0, 0);
+        $this->FPDF->Cell(45, 5, '046348632', 0, 0);
 
-        $this->FPDF->Code128(40,387,'046348632-5219-21212-52',110,10);
+        $this->FPDF->Code128(40, 387, '046348632-5219-21212-52', 110, 10);
 
         $this->FPDF->SetLineWidth(1);
         $this->FPDF->Line(40, 405, 150, 405);
         $this->FPDF->Line(40, 420, 150, 420);
 
-        for($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < 6; $i++) {
             $this->FPDF->Cell(0, 5, '', 0, 1);
         }
 
-        $this->FPDF->Cell(0, 6, 'THANK YOU - SEE YOU AGAIN SOON.', 0, 1,'C');
+        $this->FPDF->Cell(0, 6, 'THANK YOU - SEE YOU AGAIN SOON.', 0, 1, 'C');
         $this->FPDF->SetLineWidth(0.5);
         $this->FPDF->Cell(0, 5, '', 'LR', 1);
         $this->FPDF->Cell(0, 5, '', 'LRB', 1);
-
 
 
     }
