@@ -161,7 +161,7 @@ class TicketGenerator extends CI_Controller
 
         //border
         $this->FPDF->SetLineWidth(0.5);
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 24; $i++) {
             $this->FPDF->Cell(120, 10, '', 'LR', 1, 1);
         }
 
@@ -240,10 +240,79 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->Text(80,190,'AND YOU BOUGHT:',1);
 
 
+        $this->FPDF->SetLineWidth(0.5);
+        $this->FPDF->SetXY(40,195);
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->Cell(3,5,'1',0);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->Cell(56,5,'@ '.$this->pound_sterling.'2.79',0,0);
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->Cell(3,5,'1',0);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->Cell(0,5,'@ '.$this->pound_sterling.'2.35',0,1);
 
-        //$this->FPDF->MultiCell(80,5,'IN 514AD, VITALIUS LEADS A REBELLION IN THE BIZANTINE EMPIRE.',0,'C');
+        $this->FPDF->Image('assets/img/banner3.png',40,200);
 
+        $this->FPDF->SetXY(40,215);
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->Cell(60,5,'Ham & Cheese Baguette',0);
+        $this->FPDF->Cell(0,5,'Chocolate Fudge Cake',0,1);
+        $this->FPDF->SetXY(40,220);
+        $this->FPDF->SetFont('Helvetica', '', 10);
+        $this->FPDF->Cell(60,5,'Which often sells out by 2pm.',0);
+        $this->FPDF->Cell(0,5,'Which peaks in sales at 1pm',0,1);
 
+        $this->FPDF->Image('assets/img/banner4.png',36,227);
+
+        $this->FPDF->SetXY(43,240);
+        $this->FPDF->SetFont('Helvetica', '', 9);
+        $this->FPDF->Cell(50,5,'IN TOTAL, THIS ADDS UP TO: ',0,1);
+        $this->FPDF->SetFont('Helvetica', 'B', 40);
+        $this->FPDF->SetXY(53,250);
+        $this->FPDF->Cell(50,5,'986',0,1);
+        $this->FPDF->SetFont('Helvetica', '', 9);
+        $this->FPDF->SetXY(57,261);
+        $this->FPDF->Cell(50,5,'CALORIES,',0,1);
+        $this->FPDF->SetXY(111,254);
+        $this->FPDF->SetFont('Helvetica', 'B', 40);
+        $this->FPDF->Cell(50,5,'45%',0,1);
+
+        $this->FPDF->SetXY(111,262);
+        $this->FPDF->SetFont('Helvetica', '', 9);
+        $this->FPDF->Cell(50,5,'OF YOUR RDA.',0,1);
+
+        $this->FPDF->Cell(20,5,'',0,0);
+        $this->FPDF->SetXY(113,242);
+        $this->FPDF->SetFont('Helvetica', '', 9);
+        $this->FPDF->Cell(50,5,'OR ROUGHLY: ',0,0);
+
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->SetXY(113,246);
+        $this->FPDF->TextWithRotation(75, 287.5, 'STILL AROUND LATER?', 2);
+
+        $this->FPDF->SetXY(40,250);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->TextWithRotation(43, 293.2, 'The', 2);
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->TextWithRotation(51, 293, 'Nice Gallery', 2);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->TextWithRotation(76, 292.2, 'on', 2);
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->TextWithRotation(81, 292.2, 'Great Eastern Street', 2);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->TextWithRotation(123, 291.2, 'is holding its', 2);
+
+        $this->FPDF->SetXY(40,255);
+        $this->FPDF->TextWithRotation(58, 298, 'opening night from 6pm.', 2);
+        $this->FPDF->SetFont('Helvetica', 'B', 12);
+        $this->FPDF->TextWithRotation(105, 296.2, '(bit.ly/6h23b)', 2);
+
+        $this->FPDF->SetDash(1, 1);
+        $this->FPDF->SetDrawColor(169, 169, 169);
+        $this->FPDF->Line(35, 315, 155, 315);
+        $this->FPDF->SetDash();
+
+        $this->FPDF->Image('assets/img/banner5.png',45,311);
 
     }
 
