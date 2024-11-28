@@ -26,8 +26,11 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->AddPage('P', array(190, 450));
 
         $this->FPDF->SetFont('Helvetica', 'B', 12);
+
         $this->section_1();
         $this->section_2();
+        $this->section_3();
+
 
         $this->FPDF->Output('I', 'report.pdf');
 
@@ -313,6 +316,76 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetDash();
 
         $this->FPDF->Image('assets/img/banner5.png',45,311);
+
+    }
+
+    private function section_3(){
+
+        //border
+        $this->FPDF->SetLineWidth(0.5);
+        $this->FPDF->SetXY(35,315);
+        $this->FPDF->SetDrawColor(0, 0, 0);
+        for ($i = 0; $i < 20; $i++) {
+            $this->FPDF->Cell(120, 5, '', 'LR', 1, 1);
+        }
+
+        $this->FPDF->Image('assets/img/banner6.png',35,320);
+
+        $this->FPDF->SetXY(45,325);
+        $this->FPDF->Cell(30, 5, '', '', 0, 0);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->Cell(50, 5, 'ARE YOU A REGULAR?', '', 1, 1);
+        $this->FPDF->SetXY(35,331);
+        $this->FPDF->Cell(15, 5, '', '', 0, 0);
+        $this->FPDF->SetFont('Helvetica', '', 12);
+        $this->FPDF->Cell(50, 5, 'GET A PERSONALIZED RECEIPT NEXT TIME.', '', 1, 1);
+
+        //checkboxes
+        $this->FPDF->SetXY(45,348);
+        $this->FPDF->SetFont('Helvetica', '', 11);
+        $this->FPDF->Cell(5, 5, '', 1, 0);
+        $this->FPDF->Cell(5, 5, '', 0, 0);
+        $this->FPDF->Cell(0, 5, 'News Headlines', 0, 1);
+
+        $this->FPDF->Cell(0, 5, '', 0, 1);
+
+        $this->FPDF->SetXY(45,355);
+        $this->FPDF->Cell(5, 5, '', 1, 0);
+        $this->FPDF->Cell(5, 5, '', 0, 0);
+        $this->FPDF->Cell(70, 5, 'My Google Calendar. My user name is: ', 0, 0);
+        $this->FPDF->Cell(20, 5, '',1, 0);
+
+        $this->FPDF->SetXY(45,362);
+        $this->FPDF->Cell(5, 5, '', 1, 0);
+        $this->FPDF->Cell(5, 5, '', 0, 0);
+        $this->FPDF->Cell(45, 5, '20% off your next meal at ', 0, 0);
+        $this->FPDF->SetFont('Helvetica', 'B', 11);
+        $this->FPDF->Cell(30, 5, 'Bread & Butter',0, 1);
+
+        $this->FPDF->Cell(0, 7, '', 0, 1);
+
+        $this->FPDF->Cell(35, 5, '', 0, 1);
+        $this->FPDF->Cell(30, 2, '', 0, 0);
+        $this->FPDF->SetFont('Helvetica', '', 14);
+        $this->FPDF->Cell(37, 5, 'CUSTOMER ID:',0, 0);
+        $this->FPDF->Cell(45, 5, '046348632',0, 0);
+
+        $this->FPDF->Code128(40,387,'046348632-5219-21212-52',110,10);
+
+        $this->FPDF->SetLineWidth(1);
+        $this->FPDF->Line(40, 405, 150, 405);
+        $this->FPDF->Line(40, 420, 150, 420);
+
+        for($i = 0; $i < 6; $i++) {
+            $this->FPDF->Cell(0, 5, '', 0, 1);
+        }
+
+        $this->FPDF->Cell(0, 6, 'THANK YOU - SEE YOU AGAIN SOON.', 0, 1,'C');
+        $this->FPDF->SetLineWidth(0.5);
+        $this->FPDF->Cell(0, 5, '', 'LR', 1);
+        $this->FPDF->Cell(0, 5, '', 'LRB', 1);
+
+
 
     }
 
