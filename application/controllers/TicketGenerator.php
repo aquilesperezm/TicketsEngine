@@ -26,10 +26,19 @@ class TicketGenerator extends CI_Controller
 
     }
 
+    private function addNewPage($cursor_x = 35, $cursor_y = 5)
+    {
+
+        $this->FPDF->AddPage('P', array(190, 450));
+        $this->cursor_y = $cursor_y;
+        $this->cursor_x = $cursor_x;
+
+    }
+
     public function generateTicket()
     {
         $this->FPDF->SetMargins(35, 0, 35);
-        $this->FPDF->AddPage('P', array(190, 450));
+        //$this->FPDF->AddPage('P', array(190, 450));
 
         $this->FPDF->SetFont('Helvetica', 'B', 12);
 
@@ -40,14 +49,13 @@ class TicketGenerator extends CI_Controller
             ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
             ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
             ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by '],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ']
 
         );
 
-        $this->productos = array_slice($this->productos, 1,3);
+        $this->FPDF->AddPage('P', array(190, 450));
+        // $this->FPDF->AddPage('P','A4');
+
+        $this->productos = array_slice($this->productos, 0, 3);
 
 
         $this->section_1();
@@ -291,6 +299,8 @@ class TicketGenerator extends CI_Controller
 
         for ($i = 0; $i < count($this->productos); $i++) {
 
+
+
             if ($i % 2 == 0) {
 
                 if ($i == count($this->productos) - 1) {
@@ -337,6 +347,7 @@ class TicketGenerator extends CI_Controller
                 $this->cursor_y += 35;
 
             }
+
         }
 
         $this->cursor_x = 36;
@@ -348,7 +359,13 @@ class TicketGenerator extends CI_Controller
     private function section_3()
     {
 
-        if (count($this->productos) % 2 != 0)
+        $this->closeBorderLines();
+
+        if (count($this->productos) >= 9 && count($this->productos) <= 12) {
+            $this->addNewPage(35, 5);
+        }
+
+        if (count($this->productos) % 2 != 0 && (count($this->productos) < 9 || count($this->productos) > 12))
             $this->cursor_y += 35;
 
         $this->FPDF->Image('assets/img/banner4.png', $this->cursor_x, $this->cursor_y);
@@ -398,31 +415,31 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetFont('Helvetica', 'B', 12);
         $this->FPDF->TextWithRotation(105, $this->cursor_y + 10, '(bit.ly/6h23b)', 2);
 
-                 $this->FPDF->SetDash(1, 1);
-                 $this->FPDF->SetDrawColor(169, 169, 169);
-                 $this->FPDF->Line(35, $this->cursor_y + 24, 155, $this->cursor_y + 24);
-                 $this->FPDF->SetDash();
 
-                 $this->FPDF->Image('assets/img/banner5.png', 45, $this->cursor_y + 20);
+        $this->FPDF->SetDash(1, 1);
+        $this->FPDF->SetDrawColor(169, 169, 169);
+        $this->FPDF->Line(35, $this->cursor_y + 24, 155, $this->cursor_y + 24);
+        $this->FPDF->SetDash();
 
-                 $this->cursor_y += 25;
+        $this->FPDF->Image('assets/img/banner5.png', 45, $this->cursor_y + 20);
+
+        $this->cursor_y += 25;
 
     }
 
     private function section_4()
     {
 
+        if (count($this->productos) >= 5 && count($this->productos) <= 8)
+            $this->addNewPage(35, 0);
+
+
         //border
         $this->FPDF->SetLineWidth(0.5);
         $this->FPDF->SetDrawColor(0, 0, 0);
 
-        /*$this->FPDF->SetXY(35, 315);
-        $this->FPDF->SetDrawColor(0, 0, 0);
-        for ($i = 0; $i < 20; $i++) {
-            $this->FPDF->Cell(120, 5, '', 'LR', 1, 1);
-        }*/
 
-        $this->FPDF->Image('assets/img/banner6.png', 35, $this->cursor_y+ 3);
+        $this->FPDF->Image('assets/img/banner6.png', 35, $this->cursor_y + 3);
 
         $this->FPDF->SetXY(45, $this->cursor_y + 9);
         $this->FPDF->Cell(30, 5, '', '', 0, 0);
@@ -436,13 +453,13 @@ class TicketGenerator extends CI_Controller
         $this->cursor_y += 14;
 
         //message
-        $this->FPDF->SetXY(45, $this->cursor_y+12);
+        $this->FPDF->SetXY(45, $this->cursor_y + 12);
         $this->FPDF->SetFont('Helvetica', '', 11);
         $this->FPDF->Cell(5, 5, '', 0, 0);
-       // $this->FPDF->Cell(5, 5, '', 0, 0);
+        // $this->FPDF->Cell(5, 5, '', 0, 0);
         $this->FPDF->Cell(0, 5, 'Tick the box to choose what you see on your next', 0, 1);
 
-        $this->FPDF->SetXY(45, $this->cursor_y+17);
+        $this->FPDF->SetXY(45, $this->cursor_y + 17);
         $this->FPDF->SetFont('Helvetica', '', 11);
         $this->FPDF->Cell(10, 5, '', 0, 0);
         // $this->FPDF->Cell(5, 5, '', 0, 0);
@@ -450,7 +467,7 @@ class TicketGenerator extends CI_Controller
 
 
         //checkboxes
-        $this->FPDF->SetXY(45, $this->cursor_y+24);
+        $this->FPDF->SetXY(45, $this->cursor_y + 24);
         $this->FPDF->SetFont('Helvetica', '', 11);
         $this->FPDF->Cell(5, 5, '', 1, 0);
         $this->FPDF->Cell(5, 5, '', 0, 0);
@@ -458,42 +475,62 @@ class TicketGenerator extends CI_Controller
 
         $this->FPDF->Cell(0, 5, '', 0, 1);
 
-        $this->FPDF->SetXY(45, $this->cursor_y +30);
+        $this->FPDF->SetXY(45, $this->cursor_y + 30);
         $this->FPDF->Cell(5, 5, '', 1, 0);
         $this->FPDF->Cell(5, 5, '', 0, 0);
         $this->FPDF->Cell(70, 5, 'My Google Calendar. My user name is: ', 0, 0);
         $this->FPDF->Cell(20, 5, '', 1, 0);
 
-        $this->FPDF->SetXY(45, $this->cursor_y + 36);
+        $this->FPDF->SetXY(45, $this->cursor_y += 36);
         $this->FPDF->Cell(5, 5, '', 1, 0);
         $this->FPDF->Cell(5, 5, '', 0, 0);
         $this->FPDF->Cell(45, 5, '20% off your next meal at ', 0, 0);
         $this->FPDF->SetFont('Helvetica', 'B', 11);
         $this->FPDF->Cell(30, 5, 'Bread & Butter', 0, 1);
 
-        $this->FPDF->Cell(0, 7, '', 0, 1);
+        if (count($this->productos) >= 3 && count($this->productos) <= 4)
+            $this->addNewPage();
 
-       /* $this->FPDF->Cell(35, 5, '', 0, 1);
+        $this->FPDF->Cell(0, 3, '', 0, 1);
+        // $this->FPDF->Cell(0, 5, '', 0, 1);
+
+
+        $this->FPDF->Cell(35, 5, '', 0, 1);
         $this->FPDF->Cell(30, 2, '', 0, 0);
         $this->FPDF->SetFont('Helvetica', '', 14);
         $this->FPDF->Cell(37, 5, 'CUSTOMER ID:', 0, 0);
         $this->FPDF->Cell(45, 5, '046348632', 0, 0);
 
-        $this->FPDF->Code128(40, 387, '046348632-5219-21212-52', 110, 10);
+        $this->cursor_y += 12;
+
+        $this->FPDF->Code128(40, $this->cursor_y + 12, '046348632-5219-21212-52', 110, 10);
 
         $this->FPDF->SetLineWidth(1);
-        $this->FPDF->Line(40, 405, 150, 405);
-        $this->FPDF->Line(40, 420, 150, 420);
+        $this->FPDF->Line(40, $this->cursor_y + 30, 150, $this->cursor_y + 30);
+        $this->FPDF->Line(40, $this->cursor_y + 45, 150, $this->cursor_y + 45);
 
-        for ($i = 0; $i < 6; $i++) {
-            $this->FPDF->Cell(0, 5, '', 0, 1);
-        }
+        /*for ($i = 0; $i < 7; $i++) {
+            $this->FPDF->Cell(0, 4, '', 0, 1);
+        }*/
 
+        $this->FPDF->SetXY(40, $this->cursor_y + 35);
         $this->FPDF->Cell(0, 6, 'THANK YOU - SEE YOU AGAIN SOON.', 0, 1, 'C');
         $this->FPDF->SetLineWidth(0.5);
-        $this->FPDF->Cell(0, 5, '', 'LR', 1);
-        $this->FPDF->Cell(0, 5, '', 'LRB', 1);*/
+        $this->FPDF->Cell(0, 5, '', '', 1);
+        $this->FPDF->Cell(0, 5, '', 'B', 1);
 
+        $this->cursor_y += 51;
+
+        $this->FPDF->Line(35, $this->cursor_y, 35, 5);
+        $this->FPDF->Line(155, $this->cursor_y, 155, 5);
+
+    }
+
+    private function closeBorderLines($y_top = 429, $line_width = 0.5)
+    {
+        $this->FPDF->SetLineWidth(0.5);
+        $this->FPDF->Line(35, 5, 35, 429);
+        $this->FPDF->Line(155, 5, 155, 429);
 
     }
 
