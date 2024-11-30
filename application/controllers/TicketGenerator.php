@@ -10,8 +10,9 @@ class TicketGenerator extends CI_Controller
     private $cursor_x;
     private $cursor_y;
 
-    private $productos;
+    private $products;
 
+    private $sales;
 
     public function __construct()
     {
@@ -45,28 +46,103 @@ class TicketGenerator extends CI_Controller
         /**
          * rda - Recommended Dietary Allowance
          */
-        $this->productos = array(
+
+        function generateRandomValue($min, $max, array $exclude = array())
+        {
+            $range = array_diff(range($min, $max), $exclude);
+           // array_shuffle($range);
+
+            return array_shift($range);
+        }
+
+        $min = 1;
+        $max = 30;
+
+        $this->sales = array(
+            array(
+                'Sales 1' => array(
+                    '01-05' => rand($min, $max),
+                    '05-10' => rand($min, $max),
+                    '10-15' => rand($min, $max),
+                    '15-20' => rand($min, $max),
+                    '20-25' => rand($min, $max),
+                    '25-30' => rand($min, $max)
+                )
+            ),
+            array(
+                'Sales 2' => array(
+                    '01-05' => rand($min, $max),
+                    '05-10' => rand($min, $max),
+                    '10-15' => rand($min, $max),
+                    '15-20' => rand($min, $max),
+                    '20-25' => rand($min, $max),
+                    '25-30' => rand($min, $max)
+                )
+            ),
+            array(
+                'Sales 3' => array(
+                    '01-05' => rand($min, $max),
+                    '05-10' => rand($min, $max),
+                    '10-15' => rand($min, $max),
+                    '15-20' => rand($min, $max),
+                    '20-25' => rand($min, $max),
+                    '25-30' => rand($min, $max)
+                )
+            ),
+            array(
+                'Sales 4' => array(
+                    '01-05' => rand($min, $max),
+                    '05-10' => rand($min, $max),
+                    '10-15' => rand($min, $max),
+                    '15-20' => rand($min, $max),
+                    '20-25' => rand($min, $max),
+                    '25-30' => rand($min, $max)
+                )
+            ),
+            array(
+                'Sales 5' => array(
+                    '01-05' => rand($min, $max),
+                    '05-10' => rand($min, $max),
+                    '10-15' => rand($min, $max),
+                    '15-20' => rand($min, $max),
+                    '20-25' => rand($min, $max),
+                    '25-30' => rand($min, $max)
+                )
+            ),
+            array(
+                'Sales 6' => array(
+                    '01-05' => rand($min, $max),
+                    '05-10' => rand($min, $max),
+                    '10-15' => rand($min, $max),
+                    '15-20' => rand($min, $max),
+                    '20-25' => rand($min, $max),
+                    '25-30' => rand($min, $max)
+                )
+            ));
+
+        $this->products = array(
 
             ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 57, 'calorias' => 120],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 38, 'calorias' => 206],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 25, 'calorias' => 134],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 73, 'calorias' => 78],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 14, 'calorias' => 92],
-            ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 46, 'calorias' => 62],
+            ['nombre' => 'Chicken Caesar Salad', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 38, 'calorias' => 206],
+            ['nombre' => 'Grilled Cheese Sandwich', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 25, 'calorias' => 134],
+            ['nombre' => 'Vegetable Soup', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 73, 'calorias' => 78],
+            ['nombre' => 'Spaghetti Bolognese', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 14, 'calorias' => 92],
+            ['nombre' => 'Chicken Stir Fry', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 46, 'calorias' => 62],
 
         );
 
         $this->FPDF->AddPage('P', array(190, 450));
         // $this->FPDF->AddPage('P','A4');
 
-        $this->productos = array_slice($this->productos, 0, 3);
+        $this->products = array_slice($this->products, 0, 2);
 
 
         $this->section_1();
         $this->section_2();
-        $this->set_products($this->productos);
+        $this->set_products($this->products);
         $this->section_3();
         $this->section_4();
+
 
         $this->FPDF->Output('I', 'report.pdf');
 
@@ -291,7 +367,7 @@ class TicketGenerator extends CI_Controller
     private function set_products($productos = null)
     {
 
-        $this->productos = $productos;
+        $this->products = $productos;
 
         $this->FPDF->SetLineWidth(0.5);
         $this->FPDF->SetXY(40, 195);
@@ -301,18 +377,36 @@ class TicketGenerator extends CI_Controller
         $this->cursor_y = 195;
         $block_x = 40;
 
-        for ($i = 0; $i < count($this->productos); $i++) {
+        $min = 0;
+        $max = 255;
+
+        $colors = array(
+            'Sales 1' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+            'Sales 2' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+            'Sales 3' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+            'Sales 4' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+            'Sales 5' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+            'Sales 6' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+        );
+
+
+        for ($i = 0; $i < count($this->products); $i++) {
 
 
             if ($i % 2 == 0) {
 
-                if ($i == count($this->productos) - 1) {
+                if ($i == count($this->products) - 1) {
 
                     $block_x = 70;
                     $this->FPDF->SetXY($block_x, $this->cursor_y);
                     $this->FPDF->SetFont('Helvetica', '', 12);
                     $this->FPDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio']);
-                    $this->FPDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
+
+                    $this->FPDF->SetXY($block_x - 10, $this->cursor_y + 5);
+                    $this->FPDF->LineGraph(70, 20, $this->sales[$i], 'HV', $colors, 10, 7, FALSE, FALSE, FALSE);
+
+                    // $this->FPDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
+                    $this->FPDF->SetFont('Helvetica', '', 12);
                     $this->FPDF->SetXY($block_x, $this->cursor_y + 20);
                     $this->FPDF->WriteText('<' . $productos[$i]['nombre'] . '>');
                     $this->FPDF->SetXY($block_x, $this->cursor_y + 25);
@@ -325,7 +419,12 @@ class TicketGenerator extends CI_Controller
                     $this->FPDF->SetXY($block_x, $this->cursor_y);
                     $this->FPDF->SetFont('Helvetica', '', 12);
                     $this->FPDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio']);
-                    $this->FPDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
+
+                    $this->FPDF->SetXY($block_x - 10, $this->cursor_y + 5);
+                    $this->FPDF->LineGraph(70, 20, $this->sales[$i], 'HV', $colors, 10, 7, FALSE, FALSE, FALSE);
+
+                    // $this->FPDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
+                    $this->FPDF->SetFont('Helvetica', '', 12);
                     $this->FPDF->SetXY($block_x, $this->cursor_y + 20);
                     $this->FPDF->WriteText('<' . $productos[$i]['nombre'] . '>');
                     $this->FPDF->SetXY($block_x, $this->cursor_y + 25);
@@ -340,7 +439,12 @@ class TicketGenerator extends CI_Controller
                 $this->FPDF->SetXY($block_x, $this->cursor_y);
                 $this->FPDF->SetFont('Helvetica', '', 12);
                 $this->FPDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio']);
-                $this->FPDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
+
+                $this->FPDF->SetXY($block_x - 10, $this->cursor_y + 5);
+                $this->FPDF->LineGraph(70, 20, $this->sales[$i], 'HV', $colors, 10, 7, FALSE, FALSE, FALSE);
+
+                //   $this->FPDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
+                $this->FPDF->SetFont('Helvetica', '', 12);
                 $this->FPDF->SetXY($block_x, $this->cursor_y + 20);
                 $this->FPDF->WriteText('<' . $productos[$i]['nombre'] . '>');
                 $this->FPDF->SetXY($block_x, $this->cursor_y + 25);
@@ -364,11 +468,11 @@ class TicketGenerator extends CI_Controller
 
         $this->closeBorderLines();
 
-        if (count($this->productos) >= 9 && count($this->productos) <= 12) {
+        if (count($this->products) >= 9 && count($this->products) <= 12) {
             $this->addNewPage(35, 5);
         }
 
-        if (count($this->productos) % 2 != 0 && (count($this->productos) < 9 || count($this->productos) > 12))
+        if (count($this->products) % 2 != 0 && (count($this->products) < 9 || count($this->products) > 12))
             $this->cursor_y += 35;
 
         $this->FPDF->Image('assets/img/banner4.png', $this->cursor_x, $this->cursor_y);
@@ -433,7 +537,7 @@ class TicketGenerator extends CI_Controller
     private function section_4()
     {
 
-        if (count($this->productos) >= 5 && count($this->productos) <= 8)
+        if (count($this->products) >= 5 && count($this->products) <= 8)
             $this->addNewPage(35, 0);
 
 
@@ -491,7 +595,7 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetFont('Helvetica', 'B', 11);
         $this->FPDF->Cell(30, 5, 'Bread & Butter', 0, 1);
 
-        if (count($this->productos) >= 3 && count($this->productos) <= 4)
+        if (count($this->products) >= 3 && count($this->products) <= 4)
             $this->addNewPage();
 
         $this->FPDF->Cell(0, 3, '', 0, 1);

@@ -75,7 +75,7 @@ class Fpdf
      *                               Public methods                                 *
      *******************************************************************************/
 
-     //---------------------------------------- Barcode ------------------------------
+    //---------------------------------------- Barcode ------------------------------
 
     protected $T128;                                         // Tableau des codes 128
     protected $ABCset = "";                                  // jeu des caractères éligibles au C128
@@ -84,8 +84,8 @@ class Fpdf
     protected $Cset = "";                                    // Set C du jeu des caractères éligibles
     protected $SetFrom;                                      // Convertisseur source des jeux vers le tableau
     protected $SetTo;                                        // Convertisseur destination des jeux vers le tableau
-    protected $JStart = array("A"=>103, "B"=>104, "C"=>105); // Caractères de sélection de jeu au début du C128
-    protected $JSwap = array("A"=>101, "B"=>100, "C"=>99);   // Caractères de changement de jeu
+    protected $JStart = array("A" => 103, "B" => 104, "C" => 105); // Caractères de sélection de jeu au début du C128
+    protected $JSwap = array("A" => 101, "B" => 100, "C" => 99);   // Caractères de changement de jeu
 
     //------------------------------------------ Barcode end here-----------------------------
 
@@ -308,15 +308,15 @@ class Fpdf
             $this->Aset .= chr($i);
             $this->Bset .= chr($i);
         }
-        $this->Cset="0123456789".chr(206);
+        $this->Cset = "0123456789" . chr(206);
 
-        for ($i=0; $i<96; $i++) {                                                   // convertisseurs des jeux A & B
+        for ($i = 0; $i < 96; $i++) {                                                   // convertisseurs des jeux A & B
             @$this->SetFrom["A"] .= chr($i);
             @$this->SetFrom["B"] .= chr($i + 32);
-            @$this->SetTo["A"] .= chr(($i < 32) ? $i+64 : $i-32);
+            @$this->SetTo["A"] .= chr(($i < 32) ? $i + 64 : $i - 32);
             @$this->SetTo["B"] .= chr($i);
         }
-        for ($i=96; $i<107; $i++) {                                                 // contrôle des jeux A & B
+        for ($i = 96; $i < 107; $i++) {                                                 // contrôle des jeux A & B
             @$this->SetFrom["A"] .= chr($i + 104);
             @$this->SetFrom["B"] .= chr($i + 104);
             @$this->SetTo["A"] .= chr($i);
@@ -325,15 +325,16 @@ class Fpdf
 
     }
 
-    function Code128($x, $y, $code, $w, $h) {
+    function Code128($x, $y, $code, $w, $h)
+    {
         $Aguid = "";                                                                      // Création des guides de choix ABC
         $Bguid = "";
         $Cguid = "";
-        for ($i=0; $i < strlen($code); $i++) {
-            $needle = substr($code,$i,1);
-            $Aguid .= ((strpos($this->Aset,$needle)===false) ? "N" : "O");
-            $Bguid .= ((strpos($this->Bset,$needle)===false) ? "N" : "O");
-            $Cguid .= ((strpos($this->Cset,$needle)===false) ? "N" : "O");
+        for ($i = 0; $i < strlen($code); $i++) {
+            $needle = substr($code, $i, 1);
+            $Aguid .= ((strpos($this->Aset, $needle) === false) ? "N" : "O");
+            $Bguid .= ((strpos($this->Bset, $needle) === false) ? "N" : "O");
+            $Cguid .= ((strpos($this->Cset, $needle) === false) ? "N" : "O");
         }
 
         $SminiC = "OOOO";
@@ -342,50 +343,50 @@ class Fpdf
         $crypt = "";
         while ($code > "") {
             // BOUCLE PRINCIPALE DE CODAGE
-            $i = strpos($Cguid,$SminiC);                                                // forçage du jeu C, si possible
-            if ($i!==false) {
+            $i = strpos($Cguid, $SminiC);                                                // forçage du jeu C, si possible
+            if ($i !== false) {
                 $Aguid [$i] = "N";
                 $Bguid [$i] = "N";
             }
 
-            if (substr($Cguid,0,$IminiC) == $SminiC) {                                  // jeu C
+            if (substr($Cguid, 0, $IminiC) == $SminiC) {                                  // jeu C
                 $crypt .= chr(($crypt > "") ? $this->JSwap["C"] : $this->JStart["C"]);  // début Cstart, sinon Cswap
-                $made = strpos($Cguid,"N");                                             // étendu du set C
+                $made = strpos($Cguid, "N");                                             // étendu du set C
                 if ($made === false) {
                     $made = strlen($Cguid);
                 }
-                if (fmod($made,2)==1) {
+                if (fmod($made, 2) == 1) {
                     $made--;                                                            // seulement un nombre pair
                 }
-                for ($i=0; $i < $made; $i += 2) {
-                    $crypt .= chr(strval(substr($code,$i,2)));                          // conversion 2 par 2
+                for ($i = 0; $i < $made; $i += 2) {
+                    $crypt .= chr(strval(substr($code, $i, 2)));                          // conversion 2 par 2
                 }
                 $jeu = "C";
             } else {
-                $madeA = strpos($Aguid,"N");                                            // étendu du set A
+                $madeA = strpos($Aguid, "N");                                            // étendu du set A
                 if ($madeA === false) {
                     $madeA = strlen($Aguid);
                 }
-                $madeB = strpos($Bguid,"N");                                            // étendu du set B
+                $madeB = strpos($Bguid, "N");                                            // étendu du set B
                 if ($madeB === false) {
                     $madeB = strlen($Bguid);
                 }
-                $made = (($madeA < $madeB) ? $madeB : $madeA );                         // étendu traitée
-                $jeu = (($madeA < $madeB) ? "B" : "A" );                                // Jeu en cours
+                $made = (($madeA < $madeB) ? $madeB : $madeA);                         // étendu traitée
+                $jeu = (($madeA < $madeB) ? "B" : "A");                                // Jeu en cours
 
                 $crypt .= chr(($crypt > "") ? $this->JSwap[$jeu] : $this->JStart[$jeu]); // début start, sinon swap
 
-                $crypt .= strtr(substr($code, 0,$made), $this->SetFrom[$jeu], $this->SetTo[$jeu]); // conversion selon jeu
+                $crypt .= strtr(substr($code, 0, $made), $this->SetFrom[$jeu], $this->SetTo[$jeu]); // conversion selon jeu
 
             }
-            $code = substr($code,$made);                                           // raccourcir légende et guides de la zone traitée
-            $Aguid = substr($Aguid,$made);
-            $Bguid = substr($Bguid,$made);
-            $Cguid = substr($Cguid,$made);
+            $code = substr($code, $made);                                           // raccourcir légende et guides de la zone traitée
+            $Aguid = substr($Aguid, $made);
+            $Bguid = substr($Bguid, $made);
+            $Cguid = substr($Cguid, $made);
         }                                                                          // FIN BOUCLE PRINCIPALE
 
         $check = ord($crypt[0]);                                                   // calcul de la somme de contrôle
-        for ($i=0; $i<strlen($crypt); $i++) {
+        for ($i = 0; $i < strlen($crypt); $i++) {
             $check += (ord($crypt[$i]) * $i);
         }
         $check %= 103;
@@ -393,16 +394,178 @@ class Fpdf
         $crypt .= chr($check) . chr(106) . chr(107);                               // Chaine cryptée complète
 
         $i = (strlen($crypt) * 11) - 8;                                            // calcul de la largeur du module
-        $modul = $w/$i;
+        $modul = $w / $i;
 
-        for ($i=0; $i<strlen($crypt); $i++) {                                      // BOUCLE D'IMPRESSION
+        for ($i = 0; $i < strlen($crypt); $i++) {                                      // BOUCLE D'IMPRESSION
             $c = $this->T128[ord($crypt[$i])];
-            for ($j=0; $j<count($c); $j++) {
-                $this->Rect($x,$y,$c[$j]*$modul,$h,"F");
-                $x += ($c[$j++]+$c[$j])*$modul;
+            for ($j = 0; $j < count($c); $j++) {
+                $this->Rect($x, $y, $c[$j] * $modul, $h, "F");
+                $x += ($c[$j++] + $c[$j]) * $modul;
             }
         }
     }
+
+    //------------------------------------------------------- Line Charts ----------------------------------------------------
+
+    function LineGraph($w, $h, $data, $options = '', $colors = null, $maxVal = 0, $nbDiv = 4, $show_title_groups = TRUE,$show_x_values = TRUE, $show_y_values = TRUE)
+    {
+        /*******************************************
+         * Explain the variables:
+         * $w = the width of the diagram
+         * $h = the height of the diagram
+         * $data = the data for the diagram in the form of a multidimensional array
+         * $options = the possible formatting options which include:
+         * 'V' = Print Vertical Divider lines
+         * 'H' = Print Horizontal Divider Lines
+         * 'kB' = Print bounding box around the Key (legend)
+         * 'vB' = Print bounding box around the values under the graph
+         * 'gB' = Print bounding box around the graph
+         * 'dB' = Print bounding box around the entire diagram
+         * $colors = A multidimensional array containing RGB values
+         * $maxVal = The Maximum Value for the graph vertically
+         * $nbDiv = The number of vertical Divisions
+         *******************************************/
+        $this->SetDrawColor(0, 0, 0);
+        $this->SetLineWidth(0.2);
+        $keys = array_keys($data);
+        $ordinateWidth = 10;
+        $w -= $ordinateWidth;
+        $valX = $this->getX() + $ordinateWidth;
+        $valY = $this->getY();
+        $margin = 1;
+        $titleH = 8;
+        $titleW = $w;
+        $lineh = 5;
+        $keyH = count($data) * $lineh;
+        $keyW = $w / 5;
+        $graphValH = 5;
+        $graphValW = $w - $keyW - 3 * $margin;
+        $graphH = $h - (3 * $margin) - $graphValH;
+        $graphW = $w - (2 * $margin) - ($keyW + $margin);
+        $graphX = $valX + $margin;
+        $graphY = $valY + $margin;
+        $graphValX = $valX + $margin;
+        $graphValY = $valY + 2 * $margin + $graphH;
+        $keyX = $valX + (2 * $margin) + $graphW;
+        $keyY = $valY + $margin + .5 * ($h - (2 * $margin)) - .5 * ($keyH);
+        //draw graph frame border
+        if (strstr($options, 'gB')) {
+            $this->Rect($valX, $valY, $w, $h);
+        }
+        //draw graph diagram border
+        if (strstr($options, 'dB')) {
+            $this->Rect($valX + $margin, $valY + $margin, $graphW, $graphH);
+        }
+        //draw key legend border
+        if (strstr($options, 'kB')) {
+            $this->Rect($keyX, $keyY, $keyW, $keyH);
+        }
+        //draw graph value box
+        if (strstr($options, 'vB')) {
+            $this->Rect($graphValX, $graphValY, $graphValW, $graphValH);
+        }
+        //define colors
+        if ($colors === null) {
+            $safeColors = array(0, 51, 102, 153, 204, 225);
+            for ($i = 0; $i < count($data); $i++) {
+                $colors[$keys[$i]] = array($safeColors[array_rand($safeColors)], $safeColors[array_rand($safeColors)], $safeColors[array_rand($safeColors)]);
+            }
+        }
+        //form an array with all data values from the multi-demensional $data array
+        $ValArray = array();
+        foreach ($data as $key => $value) {
+            foreach ($data[$key] as $val) {
+                $ValArray[] = $val;
+            }
+        }
+        //define max value
+        if ($maxVal < ceil(max($ValArray))) {
+            $maxVal = ceil(max($ValArray));
+        }
+        //draw horizontal lines
+        $vertDivH = $graphH / $nbDiv;
+        if (strstr($options, 'H')) {
+            for ($i = 0; $i <= $nbDiv; $i++) {
+                if ($i < $nbDiv) {
+                    $this->Line($graphX, $graphY + $i * $vertDivH, $graphX + $graphW, $graphY + $i * $vertDivH);
+                } else {
+                    $this->Line($graphX, $graphY + $graphH, $graphX + $graphW, $graphY + $graphH);
+                }
+            }
+        }
+        //draw vertical lines
+        $horiDivW = floor($graphW / (count($data[$keys[0]]) - 1));
+        if (strstr($options, 'V')) {
+            for ($i = 0; $i <= (count($data[$keys[0]]) - 1); $i++) {
+                if ($i < (count($data[$keys[0]]) - 1)) {
+                    $this->Line($graphX + $i * $horiDivW, $graphY, $graphX + $i * $horiDivW, $graphY + $graphH);
+                } else {
+                    $this->Line($graphX + $graphW, $graphY, $graphX + $graphW, $graphY + $graphH);
+                }
+            }
+        }
+        //draw graph lines
+        foreach ($data as $key => $value) {
+            $this->setDrawColor($colors[$key][0], $colors[$key][1], $colors[$key][2]);
+            $this->SetLineWidth(0.8);
+            $valueKeys = array_keys($value);
+            for ($i = 0; $i < count($value); $i++) {
+                if ($i == count($value) - 2) {
+                    $this->Line(
+                        $graphX + ($i * $horiDivW),
+                        $graphY + $graphH - ($value[$valueKeys[$i]] / $maxVal * $graphH),
+                        $graphX + $graphW,
+                        $graphY + $graphH - ($value[$valueKeys[$i + 1]] / $maxVal * $graphH)
+                    );
+                } else if ($i < (count($value) - 1)) {
+                    $this->Line(
+                        $graphX + ($i * $horiDivW),
+                        $graphY + $graphH - ($value[$valueKeys[$i]] / $maxVal * $graphH),
+                        $graphX + ($i + 1) * $horiDivW,
+                        $graphY + $graphH - ($value[$valueKeys[$i + 1]] / $maxVal * $graphH)
+                    );
+                }
+            }
+            //Set the Key (legend)
+            $this->SetFont('Courier', '', 10);
+            if (!isset($n)) $n = 0;
+            //show title groups
+            if ($show_title_groups) {
+                /* $this->Line($keyX+1,$keyY+$lineh/2+$n*$lineh,$keyX+8,$keyY+$lineh/2+$n*$lineh);
+                 $this->SetXY($keyX+8,$keyY+$n*$lineh);
+                 $this->Cell($keyW,$lineh,$key,0,1,'L');*/
+            }
+            $n++;
+        }
+        //print the abscissa values
+        if ($show_x_values){
+        /* foreach($valueKeys as $key => $value){
+             if($key==0){
+                 $this->SetXY($graphValX,$graphValY);
+                 $this->Cell(30,$lineh,$value,0,0,'L');
+             } else if($key==count($valueKeys)-1){
+                 $this->SetXY($graphValX+$graphValW-30,$graphValY);
+                 $this->Cell(30,$lineh,$value,0,0,'R');
+             } else {
+                 $this->SetXY($graphValX+$key*$horiDivW-15,$graphValY);
+                 $this->Cell(30,$lineh,$value,0,0,'C');
+             }
+         }*/
+
+        }
+        //print the ordinate values
+        if($show_y_values){
+        /* for($i=0;$i<=$nbDiv;$i++){
+             $this->SetXY($graphValX-10,$graphY+($nbDiv-$i)*$vertDivH-3);
+             $this->Cell(8,6,sprintf('%.1f',$maxVal/$nbDiv*$i),0,0,'R');
+         }*/
+        }
+        $this->SetDrawColor(0, 0, 0);
+        $this->SetLineWidth(0.2);
+    }
+
+
+    //-------------------------------------------------------- Up * Line Charts -----------------------------------------------
 
     function SetDash($black = null, $white = null)
     {
@@ -434,52 +597,41 @@ class Fpdf
     {
         $intPosIni = 0;
         $intPosFim = 0;
-        if (strpos($text,'<')!==false && strpos($text,'[')!==false)
-        {
-            if (strpos($text,'<')<strpos($text,'['))
-            {
-                $this->Write(5,substr($text,0,strpos($text,'<')));
-                $intPosIni = strpos($text,'<');
-                $intPosFim = strpos($text,'>');
-                $this->SetFont('','B');
-                $this->Write(5,substr($text,$intPosIni+1,$intPosFim-$intPosIni-1));
-                $this->SetFont('','');
-                $this->WriteText(substr($text,$intPosFim+1,strlen($text)));
+        if (strpos($text, '<') !== false && strpos($text, '[') !== false) {
+            if (strpos($text, '<') < strpos($text, '[')) {
+                $this->Write(5, substr($text, 0, strpos($text, '<')));
+                $intPosIni = strpos($text, '<');
+                $intPosFim = strpos($text, '>');
+                $this->SetFont('', 'B');
+                $this->Write(5, substr($text, $intPosIni + 1, $intPosFim - $intPosIni - 1));
+                $this->SetFont('', '');
+                $this->WriteText(substr($text, $intPosFim + 1, strlen($text)));
+            } else {
+                $this->Write(5, substr($text, 0, strpos($text, '[')));
+                $intPosIni = strpos($text, '[');
+                $intPosFim = strpos($text, ']');
+                $w = $this->GetStringWidth('a') * ($intPosFim - $intPosIni - 1);
+                $this->Cell($w, $this->FontSize + 0.75, substr($text, $intPosIni + 1, $intPosFim - $intPosIni - 1), 1, 0, '');
+                $this->WriteText(substr($text, $intPosFim + 1, strlen($text)));
             }
-            else
-            {
-                $this->Write(5,substr($text,0,strpos($text,'[')));
-                $intPosIni = strpos($text,'[');
-                $intPosFim = strpos($text,']');
-                $w=$this->GetStringWidth('a')*($intPosFim-$intPosIni-1);
-                $this->Cell($w,$this->FontSize+0.75,substr($text,$intPosIni+1,$intPosFim-$intPosIni-1),1,0,'');
-                $this->WriteText(substr($text,$intPosFim+1,strlen($text)));
-            }
-        }
-        else
-        {
-            if (strpos($text,'<')!==false)
-            {
-                $this->Write(5,substr($text,0,strpos($text,'<')));
-                $intPosIni = strpos($text,'<');
-                $intPosFim = strpos($text,'>');
-                $this->SetFont('','B');
-                $this->WriteText(substr($text,$intPosIni+1,$intPosFim-$intPosIni-1));
-                $this->SetFont('','');
-                $this->WriteText(substr($text,$intPosFim+1,strlen($text)));
-            }
-            elseif (strpos($text,'[')!==false)
-            {
-                $this->Write(5,substr($text,0,strpos($text,'[')));
-                $intPosIni = strpos($text,'[');
-                $intPosFim = strpos($text,']');
-                $w=$this->GetStringWidth('a')*($intPosFim-$intPosIni-1);
-                $this->Cell($w,$this->FontSize+0.75,substr($text,$intPosIni+1,$intPosFim-$intPosIni-1),1,0,'');
-                $this->WriteText(substr($text,$intPosFim+1,strlen($text)));
-            }
-            else
-            {
-                $this->Write(5,$text);
+        } else {
+            if (strpos($text, '<') !== false) {
+                $this->Write(5, substr($text, 0, strpos($text, '<')));
+                $intPosIni = strpos($text, '<');
+                $intPosFim = strpos($text, '>');
+                $this->SetFont('', 'B');
+                $this->WriteText(substr($text, $intPosIni + 1, $intPosFim - $intPosIni - 1));
+                $this->SetFont('', '');
+                $this->WriteText(substr($text, $intPosFim + 1, strlen($text)));
+            } elseif (strpos($text, '[') !== false) {
+                $this->Write(5, substr($text, 0, strpos($text, '[')));
+                $intPosIni = strpos($text, '[');
+                $intPosFim = strpos($text, ']');
+                $w = $this->GetStringWidth('a') * ($intPosFim - $intPosIni - 1);
+                $this->Cell($w, $this->FontSize + 0.75, substr($text, $intPosIni + 1, $intPosFim - $intPosIni - 1), 1, 0, '');
+                $this->WriteText(substr($text, $intPosFim + 1, strlen($text)));
+            } else {
+                $this->Write(5, $text);
             }
 
         }
@@ -499,10 +651,9 @@ class Fpdf
      *                                                           *
      ************************************************************/
 
-    function MultiCellBltArray($w, $h, $blt_array, $border=0, $align='J', $fill=false)
+    function MultiCellBltArray($w, $h, $blt_array, $border = 0, $align = 'J', $fill = false)
     {
-        if (!is_array($blt_array))
-        {
+        if (!is_array($blt_array)) {
             die('MultiCellBltArray requires an array with the following keys: bullet,margin,text,indent,spacer');
             exit;
         }
@@ -510,10 +661,9 @@ class Fpdf
         //Save x
         $bak_x = $this->x;
 
-        for ($i=0; $i<sizeof($blt_array['text']); $i++)
-        {
+        for ($i = 0; $i < sizeof($blt_array['text']); $i++) {
             //Get bullet width including margin
-            $blt_width = $this->GetStringWidth($blt_array['bullet'] . $blt_array['margin'])+$this->cMargin*2;
+            $blt_width = $this->GetStringWidth($blt_array['bullet'] . $blt_array['margin']) + $this->cMargin * 2;
 
             // SetX
             $this->SetX($bak_x);
@@ -523,13 +673,13 @@ class Fpdf
                 $this->Cell($blt_array['indent']);
 
             //Output bullet
-            $this->Cell($blt_width,$h,$blt_array['bullet'] . $blt_array['margin'],0,'',$fill);
+            $this->Cell($blt_width, $h, $blt_array['bullet'] . $blt_array['margin'], 0, '', $fill);
 
             //Output text
-            $this->MultiCell($w-$blt_width,$h,$blt_array['text'][$i],$border,$align,$fill);
+            $this->MultiCell($w - $blt_width, $h, $blt_array['text'][$i], $border, $align, $fill);
 
             //Insert a spacer between items if not the last item
-            if ($i != sizeof($blt_array['text'])-1)
+            if ($i != sizeof($blt_array['text']) - 1)
                 $this->Ln($blt_array['spacer']);
 
             //Increment bullet if it's a number
