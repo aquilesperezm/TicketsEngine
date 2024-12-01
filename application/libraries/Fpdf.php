@@ -87,6 +87,8 @@ class Fpdf
     protected $JStart = array("A" => 103, "B" => 104, "C" => 105); // Caractères de sélection de jeu au début du C128
     protected $JSwap = array("A" => 101, "B" => 100, "C" => 99);   // Caractères de changement de jeu
 
+    private $angle=0;
+
     //------------------------------------------ Barcode end here-----------------------------
 
     function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
@@ -404,6 +406,60 @@ class Fpdf
             }
         }
     }
+
+    function WriteTextWithRotation($x_pos,$y_pos,$txt,$angle){
+
+        $this->Rotate($angle,$x_pos,$y_pos);
+        $this->WriteText($txt);
+        $this->Rotate(0);
+    }
+
+    function RotatedText($x,$y,$txt,$angle)
+    {
+        //Text rotated around its origin
+        $this->Rotate($angle,$x,$y);
+        $this->Text($x,$y,$txt);
+        $this->Rotate(0);
+    }
+
+    function RotatedImage($file,$x,$y,$w,$h,$angle)
+    {
+        //Image rotated around its upper-left corner
+        $this->Rotate($angle,$x,$y);
+        $this->Image($file,$x,$y,$w,$h);
+        $this->Rotate(0);
+    }
+
+    function Rotate($angle,$x=-1,$y=-1)
+    {
+        if($x==-1)
+            $x=$this->x;
+        if($y==-1)
+            $y=$this->y;
+        if($this->angle!=0)
+            $this->_out('Q');
+        $this->angle=$angle;
+        if($angle!=0)
+        {
+            $angle*=M_PI/180;
+            $c=cos($angle);
+            $s=sin($angle);
+            $cx=$x*$this->k;
+            $cy=($this->h-$y)*$this->k;
+            $this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm',$c,$s,-$s,$c,$cx,$cy,-$cx,-$cy));
+        }
+    }
+
+    function _endpage()
+    {
+        if($this->angle!=0)
+        {
+            $this->angle=0;
+            $this->_out('Q');
+        }
+        $this->state = 1;
+    }
+
 
     //------------------------------------------------------- Line Charts ----------------------------------------------------
 
@@ -1606,10 +1662,10 @@ class Fpdf
         $this->CurRotation = $rotation;
     }
 
-    protected function _endpage()
+   /* protected function _endpage()
     {
         $this->state = 1;
-    }
+    }*/
 
     protected function _loadfont($path)
     {

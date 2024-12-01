@@ -540,22 +540,29 @@ class TicketGenerator extends CI_Controller
 
         $this->FPDF->SetFont('Helvetica', 'B', 12);
         $this->FPDF->TextWithRotation(75, $this->cursor_y += 27, utf8_decode('¿AÚN MÁS TARDE?'), 2);
+        $this->FPDF->SetFont('Helvetica', '', 11);
 
-        $this->FPDF->SetFont('Helvetica', '', 12);
-        $this->FPDF->TextWithRotation(43, $this->cursor_y + 6, 'The', 2);
-        $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->TextWithRotation(51, $this->cursor_y + 6, 'Nice Gallery', 2);
-        $this->FPDF->SetFont('Helvetica', '', 12);
-        $this->FPDF->TextWithRotation(76, $this->cursor_y + 5 + 0.2, 'on', 2);
-        $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->TextWithRotation(81, $this->cursor_y + 5 + 0.2, 'Great Eastern Street', 2);
-        $this->FPDF->SetFont('Helvetica', '', 12);
-        $this->FPDF->TextWithRotation(123, $this->cursor_y + 4, 'is holding its', 2);
+        $this->FPDF->SetXY(44, $this->cursor_y + 3);
+        $this->FPDF->WriteTextWithRotation(43,$this->cursor_y + 20,'The <Nice Gallery> on <Great Eastern Street> is holding its',2);
+
+        $this->FPDF->SetXY(58, $this->cursor_y + 8);
+        $this->FPDF->WriteTextWithRotation(43,$this->cursor_y + 20,'opening night from 6pm. <(bit.ly/6h23b)>',2);
+
+        /* $this->FPDF->SetFont('Helvetica', '', 12);
+         $this->FPDF->TextWithRotation(43, $this->cursor_y + 6, 'The', 2);
+         $this->FPDF->SetFont('Helvetica', 'B', 12);
+         $this->FPDF->TextWithRotation(51, $this->cursor_y + 6, 'Nice Gallery', 2);
+         $this->FPDF->SetFont('Helvetica', '', 12);
+         $this->FPDF->TextWithRotation(76, $this->cursor_y + 5 + 0.2, 'on', 2);
+         $this->FPDF->SetFont('Helvetica', 'B', 12);
+         $this->FPDF->TextWithRotation(81, $this->cursor_y + 5 + 0.2, 'Great Eastern Street', 2);
+         $this->FPDF->SetFont('Helvetica', '', 12);
+         $this->FPDF->TextWithRotation(123, $this->cursor_y + 4, 'is holding its', 2);*/
 
         // $this->FPDF->SetXY(40, 255);
-        $this->FPDF->TextWithRotation(58, $this->cursor_y + 11, 'opening night from 6pm.', 2);
-        $this->FPDF->SetFont('Helvetica', 'B', 12);
-        $this->FPDF->TextWithRotation(105, $this->cursor_y + 10, '(bit.ly/6h23b)', 2);
+      //  $this->FPDF->TextWithRotation(58, $this->cursor_y + 11, 'opening night from 6pm.', 2);
+      //  $this->FPDF->SetFont('Helvetica', 'B', 12);
+      //  $this->FPDF->TextWithRotation(105, $this->cursor_y + 10, '(bit.ly/6h23b)', 2);
 
 
         $this->FPDF->SetDash(1, 1);
