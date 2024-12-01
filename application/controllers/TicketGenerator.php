@@ -36,6 +36,16 @@ class TicketGenerator extends CI_Controller
 
     }
 
+    public function generatepdf(){
+
+        $this->load->library('ticket');
+        $pdf = $this->ticket;
+
+        $pdf->render_ticket_pdf();
+
+
+    }
+
     public function generateTicket()
     {
         $this->FPDF->SetMargins(35, 0, 35);
@@ -150,8 +160,6 @@ class TicketGenerator extends CI_Controller
 
     private function section_1()
     {
-
-        //$this->FPDF->Image('image1.jpg');
 
         $this->new_blank_line(5, 'B', 0.5);
         $this->new_blank_line(5, '', 0.5);
