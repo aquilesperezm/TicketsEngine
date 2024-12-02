@@ -1,10 +1,13 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 require_once('Fpdf.php');
+
 class Ticket
 {
 
     private $title;
+    private $title_font_size;
+    private $title_align;
     private $details;
     private $address;
     private $order_number;
@@ -15,7 +18,6 @@ class Ticket
     private $offer_text;
     //stores
     private $products;
-    private $sales;
     private $offers;
 
 
@@ -26,6 +28,14 @@ class Ticket
     private $cursor_y;
 
     //----------------------------------------------------- Core Properties --------------------------------------------
+    /**
+     * @var int|mixed
+     */
+    private $details_font_size;
+    /**
+     * @var mixed|string
+     */
+    private $details_align;
 
     /**
      * @param array|null $array
@@ -52,35 +62,71 @@ class Ticket
      *                        'title'=>'20% de descuento en tu próxima comida'
      *                        ]
      *                  ],
-     *            'sales'=>[
-     *                          [
-     *                          'Sales 1' => [
-     *                                      '01-05' => 5,
-     *                                      '05-10' => 7,
-     *                                      '10-15' => 12,
-     *                                      '15-20' => 17,
-     *                                      '20-25' => 21,
-     *                                      '25-30' => 29
-     *                                        ],
-     *                          'Sales 2' => [
-     *                                       '01-05' => 4,
-     *                                       '05-10' => 6,
-     *                                       '10-15' => 11,
-     *                                       '15-20' => 19,
-     *                                       '20-25' => 22,
-     *                                       '25-30' => 28
-     *                                         ]
-     *                          ]
-     *                      ],
      *            'products'=>[
-         *              ['nombre' => 'Ham & Cheese Baguette', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 57, 'calorias' => 120],
-         *              ['nombre' => 'Chicken Caesar Salad', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 38, 'calorias' => 206],
-         *              ['nombre' => 'Grilled Cheese Sandwich', 'cantidad' => 1, 'precio' => 2.79, 'hora' => '2pm', 'graph_message' => 'Which often sells out by ', 'rda' => 25, 'calorias' => 134],
-         *          ]
+     *              [
+     *                      'nombre' => 'Ham & Cheese Baguette',
+     *                      'cantidad' => 1,
+     *                      'precio' => 2.79,
+     *                      'hora' => '2pm',
+     *                      'graph_message' => 'Which often sells out by ',
+     *                      'rda' => 57,
+     *                      'calorias' => 120,
+     *                      'sales' => [
+     *                                       '01-05' => 5,
+     *                                       '05-10' => 7,
+     *                                       '10-15' => 12,
+     *                                       '15-20' => 17,
+     *                                       '20-25' => 21,
+     *                                       '25-30' => 29
+     *                                   ]
+     *
+     *               ],
+     *              [
+     *                      'nombre' => 'Chicken Caesar Salad',
+     *                      'cantidad' => 1,
+     *                      'precio' => 2.79,
+     *                      'hora' => '2pm',
+     *                      'graph_message' => 'Which often sells out by ',
+     *                      'rda' => 38,
+     *                      'calorias' => 206,,
+     *                      'sales' => [
+     *                                        '01-05' => 5,
+     *                                        '05-10' => 7,
+     *                                        '10-15' => 12,
+     *                                        '15-20' => 17,
+     *                                        '20-25' => 21,
+     *                                        '25-30' => 29
+     *                                    ]
+     *
+     *              ],
+     *              [
+     *              'nombre' => 'Grilled Cheese Sandwich',
+     *              'cantidad' => 1,
+     *              'precio' => 2.79,
+     *              'hora' => '2pm',
+     *              'graph_message' => 'Which often sells out by ',
+     *              'rda' => 25,
+     *              'calorias' => 134,
+     *              'sales' => [
+     * 'Sales 4' => [
+     * '01-05' => rand($min, $max),
+     * '05-10' => rand($min, $max),
+     * '10-15' => rand($min, $max),
+     * '15-20' => rand($min, $max),
+     * '20-25' => rand($min, $max),
+     * '25-30' => rand($min, $max)
+     * ]
+     * ]
+     *          ],
+     *      ]
      *
      */
     public function __construct(array $array = null)
     {
+
+        $this->products = array();
+        $this->offers = array();
+
 
         $this->PDF = new Fpdf('P');
 
@@ -89,7 +135,65 @@ class Ticket
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
 
+        $this->products[] = [
+            'nombre' => 'Ham & Cheese Baguette',
+            'cantidad' => 1,
+            'precio' => $this->float_rand(1.0, 10.0, 2),
+            'hora' => '2pm',
+            'graph_message' => 'Which often sells out by ',
+            'rda' => 57,
+            'calorias' => 120,
+            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
+            'sales' => [
+                'Sales 1' => [
+                    '01-05' => rand(1, 30),
+                    '05-10' => rand(1, 30),
+                    '10-15' => rand(1, 30),
+                    '15-20' => rand(1, 30),
+                    '20-25' => rand(1, 30),
+                    '25-30' => rand(1, 30)
+                ]
+            ]
+        ];
 
+        $this->products[] = [
+            'nombre' => 'Chicken Caesar Salad',
+            'cantidad' => 1,
+            'precio' => $this->float_rand(1.0, 10.0, 2),
+            'hora' => '1pm',
+            'graph_message' => 'Which often sells out by ',
+            'rda' => 57,
+            'calorias' => 120,
+            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
+            'sales' => [
+                'Sales 1' => [
+                    '01-05' => rand(1, 30),
+                    '05-10' => rand(1, 30),
+                    '10-15' => rand(1, 30),
+                    '15-20' => rand(1, 30),
+                    '20-25' => rand(1, 30),
+                    '25-30' => rand(1, 30)
+                ]
+            ]
+        ];
+
+    }
+
+    private function float_rand($Min, $Max, $round = 0)
+    {
+        //validate input
+        if ($Min > $Max) {
+            $min = $Max;
+            $max = $Min;
+        } else {
+            $min = $Min;
+            $max = $Max;
+        }
+        $randomfloat = $min + mt_rand() / mt_getrandmax() * ($max - $min);
+        if ($round > 0)
+            $randomfloat = round($randomfloat, $round);
+
+        return $randomfloat;
     }
 
     private function addNewPage($cursor_x = 35, $cursor_y = 5)
@@ -107,14 +211,19 @@ class Ticket
         return array_shift($range);
     }
 
-    public function set_details($details)
+    public function set_details($details, $font_size = 12, $align = "C")
     {
         $this->details = $details;
+        $this->details_font_size = $font_size;
+        $this->details_align = $align;
     }
 
-    public function set_title($title)
+    public function set_title($title, $font_size = 12, $align = 'L')
     {
         $this->title = $title;
+        $this->title_font_size = $font_size;
+        $this->title_align = $align;
+
     }
 
     public function set_address($address)
@@ -169,12 +278,6 @@ class Ticket
     {
         $this->products[] = $product;
     }
-
-    public function add_sales($sales)
-    {
-        $this->sales[] = $sales;
-    }
-
 
     public function getTitle()
     {
@@ -251,14 +354,6 @@ class Ticket
     public function getProducts()
     {
         return $this->products;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSales()
-    {
-        return $this->sales;
     }
 
     /**
@@ -360,14 +455,14 @@ class Ticket
         $this->PDF->SetTextColor(0, 0, 0);
         $this->PDF->SetFont('Helvetica', 'B', 14);
 
-        $this->PDF->SetXY(64, 20);
-        $this->PDF->WriteText('<LUNES> 15/04/2011,');
+        /* $this->PDF->SetXY(64, 20);
+         $this->PDF->WriteText('<LUNES> 15/04/2011,');
 
-        $this->PDF->SetXY(64, 26);
-        $this->PDF->WriteText('<MASTERCARD *3452, EXP 04/03,>');
+         $this->PDF->SetXY(64, 26);
+         $this->PDF->WriteText('<MASTERCARD *3452, EXP 04/03,>');
 
-        $this->PDF->SetXY(64, 32);
-        $this->PDF->WriteText('<12. 15:00> O <'.utf8_decode('ALMUERZO: £ 5,14').'>');
+         $this->PDF->SetXY(64, 32);
+         $this->PDF->WriteText('<12. 15:00> O <' . utf8_decode('ALMUERZO: £ 5,14') . '>');*/
 
         $this->PDF->SetXY(64, 40);
         $this->PDF->SetDrawColor(169, 169, 169);
@@ -381,6 +476,10 @@ class Ticket
 
         $this->cursor_x = 35;
         $this->cursor_y = 70;
+
+        //render
+
+        $this->render_details(FALSE);
 
     }
 
@@ -404,39 +503,43 @@ class Ticket
         $this->PDF->SetTextColor(0, 0, 0);
         $sample_text = '';
 
-//Test1
-        $test1 = array();
-        $test1['bullet'] = chr(149);
-        $test1['margin'] = '';
-        $test1['indent'] = 0;
-        $test1['spacer'] = 0;
-        $test1['text'] = array();
+        // ----------------------------------------------- old title ----------------------------------------------------
+        /*  $test1 = array();
+          $test1['bullet'] = chr(149);
+          $test1['margin'] = '';
+          $test1['indent'] = 0;
+          $test1['spacer'] = 0;
+          $test1['text'] = array();
 
-        $test2['bullet'] = chr(149);
-        $test2['margin'] = '';
-        $test2['indent'] = 0;
-        $test2['spacer'] = 0;
-        $test2['text'] = array();
+          $test2['bullet'] = chr(149);
+          $test2['margin'] = '';
+          $test2['indent'] = 0;
+          $test2['spacer'] = 0;
+          $test2['text'] = array();
 
-        $test1['text'][0] = $sample_text;
-        $test2['text'][0] = '';
+          $test1['text'][0] = $sample_text;
+          $test2['text'][0] = '';
 
-        $this->PDF->SetXY(45, 63);
-        $this->PDF->SetFont('Helvetica', 'B', 30);
-        $this->PDF->MultiCellBltArray(60, 46, $test1);
+          $distance_points = 40;
+          $this->PDF->SetXY($distance_points, 63);
+          $this->PDF->SetFont('Helvetica', 'B', 28);
+          $this->PDF->MultiCellBltArray(60, 46, $test1);
 
-        // Title of the ticket
-        /*$this->PDF->SetFont('Helvetica', '', 20);
-        $this->PDF->Text(90, 88, '&');
-        $this->PDF->SetFont('Helvetica', 'B', 30);
-        $this->PDF->Text(96, 89, 'BUTTER');
-*/
-        $this->PDF->SetXY(50,83);
-        $this->PDF->WriteText('<BREAD> & <BUTTER>');
+          // Title of the ticket
+          /*$this->PDF->SetFont('Helvetica', '', 20);
+          $this->PDF->Text(90, 88, '&');
+          $this->PDF->SetFont('Helvetica', 'B', 30);
+          $this->PDF->Text(96, 89, 'BUTTER');
 
-        $this->PDF->SetFont('Helvetica', 'B', 30);
-        $this->PDF->SetXY(145, 81);
-        $this->PDF->MultiCellBltArray(10, 10, $test2);
+         // $this->PDF->SetXY($distance_points + 8, 83);
+         // $this->PDF->WriteText('<BREAD> & <BUTTER>');
+         // $this->PDF->WriteText($this->title);
+
+          $this->PDF->SetFont('Helvetica', 'B', 30);
+          $this->PDF->SetXY(140, 81);
+          $this->PDF->MultiCellBltArray(10, 10, $test2);*/
+//----------------------------------------------------- old title ---------------------------------------------------
+
 
         $this->PDF->SetXY(140, 90);
         $this->PDF->SetLineWidth(1);
@@ -444,10 +547,10 @@ class Ticket
 
         $this->PDF->SetFont('Helvetica', '', 10);
         //$this->PDF->SetXY(140,100);
-        $this->PDF->SetXY(53,99);
+        $this->PDF->SetXY(53, 99);
         $this->PDF->WriteText('32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
 
-        $this->PDF->SetXY(50,104);
+        $this->PDF->SetXY(50, 104);
         $this->PDF->WriteText('BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
 
         //$this->PDF->Text(53, 103, '32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
@@ -463,7 +566,7 @@ class Ticket
         $this->PDF->Image('assets/img/banner11.png', 65, 117);
 
         $this->PDF->SetFont('Helvetica', 'B', 40);
-        $this->PDF->Text(80, 140,  utf8_decode('£5.14'));
+        $this->PDF->Text(80, 140, utf8_decode('£5.14'));
         $this->PDF->SetFont('Helvetica', '', 10);
         $this->PDF->Text(73, 153, 'INCLUYE IVA DE ');
         $this->PDF->SetFont('Helvetica', 'BU', 10);
@@ -474,7 +577,6 @@ class Ticket
         $this->PDF->SetFont('Helvetica', 'B', 12);
         $this->PDF->TextWithRotation(43, 158, 'PRICE', 15);
         $this->PDF->TextWithRotation(45, 165, 'FACT!', 15);
-
 
 
         /*$this->PDF->SetFont('Helvetica', '', 11);
@@ -499,12 +601,12 @@ class Ticket
         //$this->PDF->SetXY(60,180);
         $this->PDF->SetFont('Helvetica', 'BU', 11);
         $this->PDF->Text(80, 190, 'Y COMPRASTE:', 1);
+
+        $this->render_title(FALSE);
     }
 
-    private function set_products($productos = null)
+    private function generate_products()
     {
-
-        $this->products = $productos;
 
         $this->PDF->SetLineWidth(0.5);
         $this->PDF->SetXY(40, 195);
@@ -537,36 +639,40 @@ class Ticket
                     $block_x = 70;
                     $this->PDF->SetXY($block_x, $this->cursor_y);
                     $this->PDF->SetFont('Helvetica', '', 12);
-                    $this->PDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio']);
+                    $this->PDF->WriteText('<' . $this->products[$i]['cantidad'] . '> @ ' . utf8_decode('£' . $this->products[$i]['precio']));
 
                     $this->PDF->SetXY($block_x - 10, $this->cursor_y + 5);
-                    $this->PDF->LineGraph(70, 20, $this->sales[$i], 'HV', $colors, 10, 7, FALSE, FALSE, FALSE);
+                    $sales = $this->products[$i]['sales'];
+                    $graph_color = $this->products[$i]['graph_color'];
+                    $this->PDF->LineGraph(70, 20, $sales, 'HV', $graph_color, 10, 7, FALSE, FALSE, FALSE);
 
                     // $this->PDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
                     $this->PDF->SetFont('Helvetica', '', 12);
                     $this->PDF->SetXY($block_x, $this->cursor_y + 20);
-                    $this->PDF->WriteText('<' . $productos[$i]['nombre'] . '>');
+                    $this->PDF->WriteText('<' . $this->products[$i]['nombre'] . '>');
                     $this->PDF->SetXY($block_x, $this->cursor_y + 25);
                     $this->PDF->SetFont('Helvetica', '', 10);
-                    $this->PDF->WriteText($productos[$i]['graph_message'] . $productos[$i]['hora']);
+                    $this->PDF->WriteText($this->products[$i]['graph_message'] . $this->products[$i]['hora']);
 
                 } else {
 
                     $block_x = 40;
                     $this->PDF->SetXY($block_x, $this->cursor_y);
                     $this->PDF->SetFont('Helvetica', '', 12);
-                    $this->PDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio']);
+                    $this->PDF->WriteText('<' . $this->products[$i]['cantidad'] . '> @ ' . utf8_decode('£' . $this->products[$i]['precio']));
 
                     $this->PDF->SetXY($block_x - 10, $this->cursor_y + 5);
-                    $this->PDF->LineGraph(70, 20, $this->sales[$i], 'HV', $colors, 10, 7, FALSE, FALSE, FALSE);
+                    $sales = $this->products[$i]['sales'];
+                    $graph_color = $this->products[$i]['graph_color'];
+                    $this->PDF->LineGraph(70, 20, $sales, 'HV', $graph_color, 10, 7, FALSE, FALSE, FALSE);
 
                     // $this->PDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
                     $this->PDF->SetFont('Helvetica', '', 12);
                     $this->PDF->SetXY($block_x, $this->cursor_y + 20);
-                    $this->PDF->WriteText('<' . $productos[$i]['nombre'] . '>');
+                    $this->PDF->WriteText('<' . $this->products[$i]['nombre'] . '>');
                     $this->PDF->SetXY($block_x, $this->cursor_y + 25);
                     $this->PDF->SetFont('Helvetica', '', 10);
-                    $this->PDF->WriteText($productos[$i]['graph_message'] . $productos[$i]['hora']);
+                    $this->PDF->WriteText($this->products[$i]['graph_message'] . $this->products[$i]['hora']);
                 }
 
 
@@ -575,18 +681,20 @@ class Ticket
                 $block_x += 60;
                 $this->PDF->SetXY($block_x, $this->cursor_y);
                 $this->PDF->SetFont('Helvetica', '', 12);
-                $this->PDF->WriteText('<' . $productos[$i]['cantidad'] . '> @ ' . $this->pound_sterling . $productos[$i]['precio']);
+                $this->PDF->WriteText('<' . $this->products[$i]['cantidad'] . '> @ ' . utf8_decode('£' . $this->products[$i]['precio']));
 
                 $this->PDF->SetXY($block_x - 10, $this->cursor_y + 5);
-                $this->PDF->LineGraph(70, 20, $this->sales[$i], 'HV', $colors, 10, 7, FALSE, FALSE, FALSE);
+                $sales = $this->products[$i]['sales'];
+                $graph_color = $this->products[$i]['graph_color'];
+                $this->PDF->LineGraph(70, 20, $sales, 'HV', $graph_color, 10, 7, FALSE, FALSE, FALSE);
 
                 //   $this->PDF->Image('assets/img/product_graph_1.png', $block_x, $this->cursor_y + 5);
                 $this->PDF->SetFont('Helvetica', '', 12);
                 $this->PDF->SetXY($block_x, $this->cursor_y + 20);
-                $this->PDF->WriteText('<' . $productos[$i]['nombre'] . '>');
+                $this->PDF->WriteText('<' . $this->products[$i]['nombre'] . '>');
                 $this->PDF->SetXY($block_x, $this->cursor_y + 25);
                 $this->PDF->SetFont('Helvetica', '', 10);
-                $this->PDF->WriteText($productos[$i]['graph_message'] . $productos[$i]['hora']);
+                $this->PDF->WriteText($this->products[$i]['graph_message'] . $this->products[$i]['hora']);
 
                 $this->cursor_y += 35;
 
@@ -644,10 +752,10 @@ class Ticket
         $this->PDF->SetFont('Helvetica', '', 11);
 
         $this->PDF->SetXY(44, $this->cursor_y + 3);
-        $this->PDF->WriteTextWithRotation(43,$this->cursor_y + 20,'The <Nice Gallery> on <Great Eastern Street> is holding its',2);
+        $this->PDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'The <Nice Gallery> on <Great Eastern Street> is holding its', 2);
 
         $this->PDF->SetXY(58, $this->cursor_y + 8);
-        $this->PDF->WriteTextWithRotation(43,$this->cursor_y + 20,'opening night from 6pm. <(bit.ly/6h23b)>',2);
+        $this->PDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'opening night from 6pm. <(bit.ly/6h23b)>', 2);
 
         /* $this->PDF->SetFont('Helvetica', '', 12);
          $this->PDF->TextWithRotation(43, $this->cursor_y + 6, 'The', 2);
@@ -748,7 +856,7 @@ class Ticket
         $this->PDF->Cell(35, 5, '', 0, 1);
         $this->PDF->Cell(30, 2, '', 0, 1);
         $this->PDF->Cell(0, 5, '', 0, 1);
-        $this->PDF->Cell(30, 5, '', 0,0);
+        $this->PDF->Cell(30, 5, '', 0, 0);
         $this->PDF->SetFont('Helvetica', '', 14);
         $this->PDF->Cell(37, 5, 'ID DE CLIENTE:', 0, 0);
         $this->PDF->Cell(45, 5, '046348632', 0, 0);
@@ -786,14 +894,39 @@ class Ticket
 
     }
 
+    private function render_details($border = '')
+    {
 
+        $this->PDF->SetDrawColor(0, 0, 0);
+        $this->PDF->SetTextColor(0, 0, 0);
+        $this->PDF->SetXY(63, 18);
+        $this->PDF->SetStyle2("b", "Helvetica", "B", $this->details_font_size, "0,0,0");
+        $this->PDF->SetFont('Helvetica', '', $this->details_font_size);
+        $this->PDF->MultiCellTag(83, 7, $this->details, $border, $this->details_align, 0);
+
+    }
+
+    private function render_title($border)
+    {
+
+        $bullet = chr(149);
+        $this->PDF->SetLineWidth(0.5);
+        $this->PDF->SetDrawColor(255, 0, 0);
+        $this->PDF->SetXY(35, 76);
+        $this->PDF->SetStyle2("b", "Helvetica", "B", $this->title_font_size, "0,0,0");
+        $this->PDF->SetStyle2("b1", "Helvetica", "", $this->title_font_size - 10, "0,0,0");
+        $this->PDF->SetFont('Helvetica', '', $this->title_font_size);
+        $this->PDF->MultiCellTag(120, 18, $bullet . "   " . $this->title . "   " . $bullet, $border, $this->title_align, 0);
+        $this->PDF->SetDrawColor(0, 0, 0);
+
+    }
 
 
     public function render_ticket_pdf()
     {
         $this->generate_first_section();
         $this->generate_second_section();
-        $this->set_products();
+        $this->generate_products();
         $this->generate_third_section();
         $this->generate_fourth_section();
         $this->PDF->Output('I', 'ticket_temp.pdf');

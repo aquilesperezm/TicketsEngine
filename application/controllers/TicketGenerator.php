@@ -41,6 +41,9 @@ class TicketGenerator extends CI_Controller
         $this->load->library('ticket');
         $pdf = $this->ticket;
 
+        //set title
+        $pdf->set_details('<b>MONDAY</b> 15/04/2011,      <b>MASTERCARD *3452, EXP 04/13,   </b> <b>12.15:00PM</b> OR ' . utf8_decode('<b>LUCHTIME, £5.14</b>'),14,'L');
+        $pdf->set_title(' <b>BREAD</b>    <b1>&</b1>     <b>BUTTER</b> ',30,'C');
         $pdf->render_ticket_pdf();
 
 
