@@ -36,14 +36,60 @@ class TicketGenerator extends CI_Controller
 
     }
 
-    public function generatepdf(){
+    public function generatepdf()
+    {
 
         $this->load->library('ticket');
         $pdf = $this->ticket;
 
+        $pdf->add_product([
+            'nombre' => 'Ham & Cheese Baguette',
+            'cantidad' => 1,
+            'precio' => $pdf->float_rand(1.0, 10.0, 2),
+            'hora' => '2pm',
+            'graph_message' => 'Which often sells out by ',
+            'rda' => 57,
+            'calorias' => 120,
+            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
+            'sales' => [
+                'Sales 1' => [
+                    '01-05' => rand(1, 30),
+                    '05-10' => rand(1, 30),
+                    '10-15' => rand(1, 30),
+                    '15-20' => rand(1, 30),
+                    '20-25' => rand(1, 30),
+                    '25-30' => rand(1, 30)
+                ]
+            ]
+        ]);
+
+        $pdf->add_product([
+            'nombre' => 'Chicken Caesar Salad',
+            'cantidad' => 1,
+            'precio' => $pdf->float_rand(1.0, 10.0, 2),
+            'hora' => '1pm',
+            'graph_message' => 'Which often sells out by ',
+            'rda' => 57,
+            'calorias' => 120,
+            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
+            'sales' => [
+                'Sales 1' => [
+                    '01-05' => rand(1, 30),
+                    '05-10' => rand(1, 30),
+                    '10-15' => rand(1, 30),
+                    '15-20' => rand(1, 30),
+                    '20-25' => rand(1, 30),
+                    '25-30' => rand(1, 30)
+                ]
+            ]
+        ]);
+
         //set title
-        $pdf->set_details('<b>MONDAY</b> 15/04/2011,      <b>MASTERCARD *3452, EXP 04/13,   </b> <b>12.15:00PM</b> OR ' . utf8_decode('<b>LUCHTIME, £5.14</b>'),14,'L');
-        $pdf->set_title(' <b>BREAD</b>    <b1>&</b1>     <b>BUTTER</b> ',30,'C');
+        $pdf->set_details('<b>MONDAY</b> 15/04/2011,      <b>MASTERCARD *3452, EXP 04/13,   </b> <b>12.15:00PM</b> OR ' . utf8_decode('<b>LUCHTIME, £5.14</b>'), 14, 'L');
+        $pdf->set_title(' <b>BREAD</b>    <b1>&</b1>     <b>BUTTER</b> ', 30, 'C');
+        $pdf->set_address('32 GREAT EASTERN STREET, LONDON, EC2A 4RQ BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33', 11, 'C');
+        $pdf->set_order_number('2049');
+        $pdf->set_iva('1.03');
         $pdf->render_ticket_pdf();
 
 
@@ -63,7 +109,7 @@ class TicketGenerator extends CI_Controller
         function generateRandomValue($min, $max, array $exclude = array())
         {
             $range = array_diff(range($min, $max), $exclude);
-           // array_shuffle($range);
+            // array_shuffle($range);
 
             return array_shift($range);
         }
@@ -246,22 +292,22 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetTextColor(0, 0, 0);
         $this->FPDF->SetFont('Helvetica', 'B', 14);
 
-       /* $this->FPDF->Text(63, 25, 'MONDAY');
-        $this->FPDF->SetFont('Helvetica', '', 14);
-        $this->FPDF->Text(89, 25, 'THE');
-        $this->FPDF->SetFont('Helvetica', 'B', 14);
-        $this->FPDF->Text(102, 25, '15/04/2011');
+        /* $this->FPDF->Text(63, 25, 'MONDAY');
+         $this->FPDF->SetFont('Helvetica', '', 14);
+         $this->FPDF->Text(89, 25, 'THE');
+         $this->FPDF->SetFont('Helvetica', 'B', 14);
+         $this->FPDF->Text(102, 25, '15/04/2011');
 
-        $this->FPDF->SetFont('Helvetica', 'B', 14);
-        $this->FPDF->Text(63, 30, 'MASTERCARD *3452, EXP 04/13,');
+         $this->FPDF->SetFont('Helvetica', 'B', 14);
+         $this->FPDF->Text(63, 30, 'MASTERCARD *3452, EXP 04/13,');
 
-        $this->FPDF->SetFont('Helvetica', 'B', 14);
-        $this->FPDF->Text(63, 35, '12.15PM,');
-        $this->FPDF->SetFont('Helvetica', '', 14);
-        $this->FPDF->Text(85, 35, 'OR');
-        $this->FPDF->SetFont('Helvetica', 'B', 14);
+         $this->FPDF->SetFont('Helvetica', 'B', 14);
+         $this->FPDF->Text(63, 35, '12.15PM,');
+         $this->FPDF->SetFont('Helvetica', '', 14);
+         $this->FPDF->Text(85, 35, 'OR');
+         $this->FPDF->SetFont('Helvetica', 'B', 14);
 
-        $this->FPDF->Text(93, 35, 'LUNCHTIME, ' . $this->pound_sterling . '5.14');*/
+         $this->FPDF->Text(93, 35, 'LUNCHTIME, ' . $this->pound_sterling . '5.14');*/
 
         $this->FPDF->SetXY(64, 20);
         $this->FPDF->WriteText('<LUNES> 15/04/2011,');
@@ -270,7 +316,7 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->WriteText('<MASTERCARD *3452, EXP 04/03,>');
 
         $this->FPDF->SetXY(64, 32);
-        $this->FPDF->WriteText('<12. 15:00> O <'.utf8_decode('ALMUERZO: £ 5,14').'>');
+        $this->FPDF->WriteText('<12. 15:00> O <' . utf8_decode('ALMUERZO: £ 5,14') . '>');
 
 
         $this->FPDF->SetXY(64, 40);
@@ -337,7 +383,7 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetFont('Helvetica', 'B', 30);
         $this->FPDF->Text(96, 89, 'BUTTER');
 */
-        $this->FPDF->SetXY(50,83);
+        $this->FPDF->SetXY(50, 83);
         $this->FPDF->WriteText('<BREAD> & <BUTTER>');
 
         $this->FPDF->SetFont('Helvetica', 'B', 30);
@@ -350,10 +396,10 @@ class TicketGenerator extends CI_Controller
 
         $this->FPDF->SetFont('Helvetica', '', 10);
         //$this->FPDF->SetXY(140,100);
-        $this->FPDF->SetXY(53,99);
+        $this->FPDF->SetXY(53, 99);
         $this->FPDF->WriteText('32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
 
-        $this->FPDF->SetXY(50,104);
+        $this->FPDF->SetXY(50, 104);
         $this->FPDF->WriteText('BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
 
         //$this->FPDF->Text(53, 103, '32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
@@ -380,7 +426,6 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetFont('Helvetica', 'B', 12);
         $this->FPDF->TextWithRotation(43, 158, 'PRICE', 15);
         $this->FPDF->TextWithRotation(45, 165, 'FACT!', 15);
-
 
 
         /*$this->FPDF->SetFont('Helvetica', '', 11);
@@ -554,10 +599,10 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->SetFont('Helvetica', '', 11);
 
         $this->FPDF->SetXY(44, $this->cursor_y + 3);
-        $this->FPDF->WriteTextWithRotation(43,$this->cursor_y + 20,'The <Nice Gallery> on <Great Eastern Street> is holding its',2);
+        $this->FPDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'The <Nice Gallery> on <Great Eastern Street> is holding its', 2);
 
         $this->FPDF->SetXY(58, $this->cursor_y + 8);
-        $this->FPDF->WriteTextWithRotation(43,$this->cursor_y + 20,'opening night from 6pm. <(bit.ly/6h23b)>',2);
+        $this->FPDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'opening night from 6pm. <(bit.ly/6h23b)>', 2);
 
         /* $this->FPDF->SetFont('Helvetica', '', 12);
          $this->FPDF->TextWithRotation(43, $this->cursor_y + 6, 'The', 2);
@@ -571,9 +616,9 @@ class TicketGenerator extends CI_Controller
          $this->FPDF->TextWithRotation(123, $this->cursor_y + 4, 'is holding its', 2);*/
 
         // $this->FPDF->SetXY(40, 255);
-      //  $this->FPDF->TextWithRotation(58, $this->cursor_y + 11, 'opening night from 6pm.', 2);
-      //  $this->FPDF->SetFont('Helvetica', 'B', 12);
-      //  $this->FPDF->TextWithRotation(105, $this->cursor_y + 10, '(bit.ly/6h23b)', 2);
+        //  $this->FPDF->TextWithRotation(58, $this->cursor_y + 11, 'opening night from 6pm.', 2);
+        //  $this->FPDF->SetFont('Helvetica', 'B', 12);
+        //  $this->FPDF->TextWithRotation(105, $this->cursor_y + 10, '(bit.ly/6h23b)', 2);
 
 
         $this->FPDF->SetDash(1, 1);
@@ -658,7 +703,7 @@ class TicketGenerator extends CI_Controller
         $this->FPDF->Cell(35, 5, '', 0, 1);
         $this->FPDF->Cell(30, 2, '', 0, 1);
         $this->FPDF->Cell(0, 5, '', 0, 1);
-        $this->FPDF->Cell(30, 5, '', 0,0);
+        $this->FPDF->Cell(30, 5, '', 0, 0);
         $this->FPDF->SetFont('Helvetica', '', 14);
         $this->FPDF->Cell(37, 5, 'ID DE CLIENTE:', 0, 0);
         $this->FPDF->Cell(45, 5, '046348632', 0, 0);

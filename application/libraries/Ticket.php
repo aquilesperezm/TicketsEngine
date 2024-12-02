@@ -36,6 +36,14 @@ class Ticket
      * @var mixed|string
      */
     private $details_align;
+    /**
+     * @var int|mixed
+     */
+    private $address_fontsize;
+    /**
+     * @var mixed|string
+     */
+    private $address_align;
 
     /**
      * @param array|null $array
@@ -135,51 +143,13 @@ class Ticket
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
 
-        $this->products[] = [
-            'nombre' => 'Ham & Cheese Baguette',
-            'cantidad' => 1,
-            'precio' => $this->float_rand(1.0, 10.0, 2),
-            'hora' => '2pm',
-            'graph_message' => 'Which often sells out by ',
-            'rda' => 57,
-            'calorias' => 120,
-            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
-            'sales' => [
-                'Sales 1' => [
-                    '01-05' => rand(1, 30),
-                    '05-10' => rand(1, 30),
-                    '10-15' => rand(1, 30),
-                    '15-20' => rand(1, 30),
-                    '20-25' => rand(1, 30),
-                    '25-30' => rand(1, 30)
-                ]
-            ]
-        ];
 
-        $this->products[] = [
-            'nombre' => 'Chicken Caesar Salad',
-            'cantidad' => 1,
-            'precio' => $this->float_rand(1.0, 10.0, 2),
-            'hora' => '1pm',
-            'graph_message' => 'Which often sells out by ',
-            'rda' => 57,
-            'calorias' => 120,
-            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
-            'sales' => [
-                'Sales 1' => [
-                    '01-05' => rand(1, 30),
-                    '05-10' => rand(1, 30),
-                    '10-15' => rand(1, 30),
-                    '15-20' => rand(1, 30),
-                    '20-25' => rand(1, 30),
-                    '25-30' => rand(1, 30)
-                ]
-            ]
-        ];
+
+
 
     }
 
-    private function float_rand($Min, $Max, $round = 0)
+    public function float_rand($Min, $Max, $round = 0)
     {
         //validate input
         if ($Min > $Max) {
@@ -226,9 +196,11 @@ class Ticket
 
     }
 
-    public function set_address($address)
+    public function set_address($address,$font_size = 12,$align = 'L')
     {
         $this->address = $address;
+        $this->address_fontsize = $font_size;
+        $this->address_align = $align;
 
     }
 
@@ -547,11 +519,14 @@ class Ticket
 
         $this->PDF->SetFont('Helvetica', '', 10);
         //$this->PDF->SetXY(140,100);
-        $this->PDF->SetXY(53, 99);
+
+       //----------------------------------------- old address --------------------------------------------
+        /* $this->PDF->SetXY(53, 99);
         $this->PDF->WriteText('32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
 
         $this->PDF->SetXY(50, 104);
         $this->PDF->WriteText('BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
+        */
 
         //$this->PDF->Text(53, 103, '32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
         //$this->PDF->Text(50, 108, 'BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
@@ -561,16 +536,22 @@ class Ticket
         $this->PDF->SetFont('Helvetica', '', 8);
         $this->PDF->Text(40, 119, 'NO. ORDEN: ');
         $this->PDF->SetFont('Helvetica', 'B', 8);
-        $this->PDF->Text(57, 119, '2049');
+        $this->PDF->Text(57, 119, $this->order_number);
 
         $this->PDF->Image('assets/img/banner11.png', 65, 117);
 
-        $this->PDF->SetFont('Helvetica', 'B', 40);
-        $this->PDF->Text(80, 140, utf8_decode('£5.14'));
+        $total = 0;
+          foreach($this->products as $p){
+              $total += $p['precio'];
+          }
+
+
+        $this->PDF->SetFont('Helvetica', 'B', 36);
+        $this->PDF->Text(78, 140, utf8_decode('£'.($total + $this->iva)));
         $this->PDF->SetFont('Helvetica', '', 10);
         $this->PDF->Text(73, 153, 'INCLUYE IVA DE ');
         $this->PDF->SetFont('Helvetica', 'BU', 10);
-        $this->PDF->Text(103, 153, utf8_decode('£1.03'));
+        $this->PDF->Text(103, 153, utf8_decode('£'.$this->iva));
 
         $this->PDF->Image('assets/img/banner22.png', 37, 147);
 
@@ -584,7 +565,7 @@ class Ticket
         $this->PDF->Cell(180, 5, 'IN ', '0');
         $this->PDF->SetFont('Helvetica', 'B', 11);
         $this->PDF->SetXY(70, 165);
-        $this->PDF->Cell(190, 5, '514', '0');
+        +$this->PDF->Cell(190, 5, '514', '0');
         $this->PDF->SetFont('Helvetica', '', 11);
         $this->PDF->SetXY(77, 165);
         $this->PDF->Cell(203, 5, 'AD, VITALIUS LEADS A ', '0');
@@ -603,6 +584,7 @@ class Ticket
         $this->PDF->Text(80, 190, 'Y COMPRASTE:', 1);
 
         $this->render_title(FALSE);
+        $this->render_address(FALSE);
     }
 
     private function generate_products()
@@ -917,6 +899,21 @@ class Ticket
         $this->PDF->SetStyle2("b1", "Helvetica", "", $this->title_font_size - 10, "0,0,0");
         $this->PDF->SetFont('Helvetica', '', $this->title_font_size);
         $this->PDF->MultiCellTag(120, 18, $bullet . "   " . $this->title . "   " . $bullet, $border, $this->title_align, 0);
+        $this->PDF->SetDrawColor(0, 0, 0);
+
+    }
+
+    private function render_address($border)
+    {
+
+        $bullet = chr(149);
+        $this->PDF->SetLineWidth(0.5);
+        $this->PDF->SetDrawColor(255, 0, 0);
+        $this->PDF->SetXY(35, 100);
+        $this->PDF->SetStyle2("b", "Helvetica", "B", $this->address_fontsize, "0,0,0");
+        $this->PDF->SetStyle2("b1", "Helvetica", "", $this->address_fontsize - 10, "0,0,0");
+        $this->PDF->SetFont('Helvetica', '', $this->address_fontsize);
+        $this->PDF->MultiCellTag(120, 5, $this->address, $border, $this->address_align, 0);
         $this->PDF->SetDrawColor(0, 0, 0);
 
     }
