@@ -144,9 +144,6 @@ class Ticket
         $this->PDF->SetFont('Helvetica', 'B', 12);
 
 
-
-
-
     }
 
     public function float_rand($Min, $Max, $round = 0)
@@ -572,11 +569,18 @@ class Ticket
         $this->PDF->SetXY(58, 170);
         $this->PDF->Cell(170, 5, 'REBELLION IN THE BIZANTINE EMPIRE.', '0');*/
 
-        $this->PDF->SetFont('Helvetica', '', 12);
+       /* $this->PDF->SetFont('Helvetica', '', 12);
         $this->PDF->SetXY(67, 165);
         $this->PDF->WriteText('IN <514>AD, VITALIUS LEADS A');
         $this->PDF->SetXY(56, 172);
         $this->PDF->WriteText('REBELLION IN THE BIZANTINE EMPIRE.');
+       */
+
+        $this->PDF->SetLineWidth(0.5);
+        $this->PDF->SetXY(55,163);
+        $this->PDF->Setfont('Helvetica', '', 13);
+        $this->PDF->SetStyle2('b','Helvetica','B',13,'0,0,0');
+        $this->PDF->MultiCellTag(85,6,$this->price_phrase,0,'C');
 
 
         //$this->PDF->SetXY(60,180);

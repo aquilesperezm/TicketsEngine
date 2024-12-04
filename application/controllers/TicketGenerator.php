@@ -90,6 +90,7 @@ class TicketGenerator extends CI_Controller
         $pdf->set_address('32 GREAT EASTERN STREET, LONDON, EC2A 4RQ BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33', 11, 'C');
         $pdf->set_order_number('2049');
         $pdf->set_iva('1.03');
+        $pdf->set_price_phrase('IN <b>514</b>AD, VITALIUS LEADS A REBELLION IN THE BIZANTINE EMPIRE.');
         $pdf->render_ticket_pdf();
 
 
