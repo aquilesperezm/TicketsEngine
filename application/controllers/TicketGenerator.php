@@ -49,7 +49,7 @@ class TicketGenerator extends CI_Controller
             'hora' => '2pm',
             'graph_message' => 'Which often sells out by ',
             'rda' => 57,
-            'calorias' => 120,
+            'calorias' => rand(100,200),
             'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
             'sales' => [
                 'Sales 1' => [
@@ -70,7 +70,7 @@ class TicketGenerator extends CI_Controller
             'hora' => '1pm',
             'graph_message' => 'Which often sells out by ',
             'rda' => 57,
-            'calorias' => 120,
+            'calorias' => rand(100,200),
             'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
             'sales' => [
                 'Sales 1' => [
@@ -91,6 +91,7 @@ class TicketGenerator extends CI_Controller
         $pdf->set_order_number('2049');
         $pdf->set_iva('1.03');
         $pdf->set_price_phrase('IN <b>514</b>AD, VITALIUS LEADS A REBELLION IN THE BIZANTINE EMPIRE.');
+        $pdf->set_rda_percent(rand(50,100).'%');
         $pdf->render_ticket_pdf();
 
 

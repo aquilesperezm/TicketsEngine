@@ -44,6 +44,7 @@ class Ticket
      * @var mixed|string
      */
     private $address_align;
+    private $rda_percent;
 
     /**
      * @param array|null $array
@@ -715,13 +716,18 @@ class Ticket
         $this->PDF->SetFont('Helvetica', '', 9);
         $this->PDF->Cell(50, 5, 'O APROXIM.: ', 0, 0);
 
+        $total_calorias = 0;
+        foreach ($this->products as $product) {
+            $total_calorias += $product['calorias'];
+        }
+
         $this->PDF->SetFont('Helvetica', 'B', 40);
         $this->PDF->SetXY(53, $this->cursor_y += 8);
-        $this->PDF->Cell(50, 5, '986', 0, 1);
+        $this->PDF->Cell(50, 5, $total_calorias, 0, 1);
 
         $this->PDF->SetXY(111, $this->cursor_y + 5);
         $this->PDF->SetFont('Helvetica', 'B', 40);
-        $this->PDF->Cell(50, 5, '45%', 0, 1);
+        $this->PDF->Cell(50, 5, $this->rda_percent, 0, 1);
 
         $this->PDF->SetFont('Helvetica', '', 9);
         $this->PDF->SetXY(57, $this->cursor_y += 11);
@@ -737,12 +743,14 @@ class Ticket
         $this->PDF->TextWithRotation(75, $this->cursor_y += 27, utf8_decode('¿AÚN MÁS TARDE?'), 2);
         $this->PDF->SetFont('Helvetica', '', 11);
 
-        $this->PDF->SetXY(44, $this->cursor_y + 3);
+
+
+        /*$this->PDF->SetXY(44, $this->cursor_y + 3);
         $this->PDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'The <Nice Gallery> on <Great Eastern Street> is holding its', 2);
 
         $this->PDF->SetXY(58, $this->cursor_y + 8);
         $this->PDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'opening night from 6pm. <(bit.ly/6h23b)>', 2);
-
+*/
         /* $this->PDF->SetFont('Helvetica', '', 12);
          $this->PDF->TextWithRotation(43, $this->cursor_y + 6, 'The', 2);
          $this->PDF->SetFont('Helvetica', 'B', 12);
@@ -932,6 +940,22 @@ class Ticket
         $this->generate_fourth_section();
         $this->PDF->Output('I', 'ticket_temp.pdf');
 
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_rda_percent()
+    {
+        return $this->rda_percent;
+    }
+
+    /**
+     * @param mixed $rda_percent
+     */
+    public function set_rda_percent($rda_percent)
+    {
+        $this->rda_percent = $rda_percent;
     }
 
 }
