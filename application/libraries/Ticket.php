@@ -45,6 +45,8 @@ class Ticket
      */
     private $address_align;
     private $rda_percent;
+    private $news;
+    private $news_fontsize;
 
     /**
      * @param array|null $array
@@ -57,6 +59,8 @@ class Ticket
      *           'iva'=> '1.03',
      *           'client_number'=>'046348632',
      *           'price_phrase'=>'IN 514AD, VITALIUS LEADS A REBELLION IN THE BIZANTINE EMPIRE.',
+     *            'news' => '',
+     *            'news_fontsize' => 13,
      *           'offer_title'=>'¿ERES UN CLIENTE REGULAR?',
      *           'offer_text'=>'Marca la casilla para elegir lo que verás en tu próximo',
      *           'offers'=>[
@@ -741,9 +745,18 @@ class Ticket
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
         $this->PDF->TextWithRotation(75, $this->cursor_y += 27, utf8_decode('¿AÚN MÁS TARDE?'), 2);
-        $this->PDF->SetFont('Helvetica', '', 11);
 
+        // this is a news
 
+        $this->PDF->SetXY(40, $this->cursor_y + 3);
+        $this->PDF->Rotate(2);
+        $this->PDF->SetFont('Helvetica', '', $this->news_fontsize);
+        $this->PDF->SetStyle2('b','Helvetica','B',$this->news_fontsize, '0,0,0');
+
+        $this->PDF->MultiCellTag(110,5,$this->news,0,'C',FALSE);
+        //$this->PDF->MultiCellTag(110,5,'The <b>Nice Gallery</b> on <b>Great Eastern Street</b> is holding its opening night from 6pm. <b>(bit.ly/6h23b)</b>',1,'C',FALSE);
+
+        $this->PDF->Rotate(0);
 
         /*$this->PDF->SetXY(44, $this->cursor_y + 3);
         $this->PDF->WriteTextWithRotation(43, $this->cursor_y + 20, 'The <Nice Gallery> on <Great Eastern Street> is holding its', 2);
@@ -777,6 +790,55 @@ class Ticket
 
         $this->cursor_y += 25;
 
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_news()
+    {
+        return $this->news;
+    }
+
+    /**
+     * @param mixed $news
+     */
+    public function set_news($news,$fontsize)
+    {
+        $this->news = $news;
+        $this->news_fontsize = $fontsize;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNewsFontsize()
+    {
+        return $this->news_fontsize;
+    }
+
+    /**
+     * @param mixed $news_fontsize
+     */
+    public function setNewsFontsize($news_fontsize)
+    {
+        $this->news_fontsize = $news_fontsize;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getAddressAlign()
+    {
+        return $this->address_align;
+    }
+
+    /**
+     * @param mixed|string $address_align
+     */
+    public function setAddressAlign($address_align)
+    {
+        $this->address_align = $address_align;
     }
 
     private function generate_fourth_section()

@@ -92,6 +92,11 @@ class TicketGenerator extends CI_Controller
         $pdf->set_iva('1.03');
         $pdf->set_price_phrase('IN <b>514</b>AD, VITALIUS LEADS A REBELLION IN THE BIZANTINE EMPIRE.');
         $pdf->set_rda_percent(rand(50,100).'%');
+        $pdf->set_news('The <b>Nice Gallery</b> on <b>Great Eastern Street</b> is holding its opening night from 6pm. <b>(bit.ly/6h23b)</b>',13);
+
+
+
+
         $pdf->render_ticket_pdf();
 
 

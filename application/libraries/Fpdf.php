@@ -425,6 +425,8 @@ class Fpdf
         $this->Rotate(0);
     }
 
+
+
     function RotatedText($x,$y,$txt,$angle)
     {
         //Text rotated around its origin
