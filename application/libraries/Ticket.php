@@ -48,6 +48,8 @@ class Ticket
     private $news;
     private $news_fontsize;
 
+    private $url_image_logo;
+
     /**
      * @param array|null $array
      * @example
@@ -151,6 +153,14 @@ class Ticket
 
     }
 
+    public function set_url_logo($url_image_logo){
+        $this->url_image_logo = $url_image_logo;
+    }
+
+    public function get_url_logo(){
+        return $this->url_image_logo;
+    }
+
     public function float_rand($Min, $Max, $round = 0)
     {
         //validate input
@@ -171,7 +181,7 @@ class Ticket
     private function addNewPage($cursor_x = 35, $cursor_y = 5)
     {
 
-        $this->PDF->AddPage('P', array(190, 450));
+        $this->PDF->AddPage('P', array(190, 550));
         $this->cursor_y = $cursor_y;
         $this->cursor_x = $cursor_x;
 
@@ -345,9 +355,22 @@ class Ticket
         $this->PDF->Cell(0, $space, '', $border, 1);
     }
 
+
+    private function generate_logo_section(){
+
+
+        $this->PDF->SetDrawColor(0, 0, 0);
+        $this->new_blank_line(5, 'B', 0.5);
+       // $this->new_blank_line(5, '', 0.5);
+        $this->PDF->Cell(120,65,'','LTR',1);
+
+    }
+
     private function generate_first_section()
     {
-        $this->new_blank_line(5, 'B', 0.5);
+        $this->cursor_y = 70;
+        $this->PDF->SetXY(40,$this->cursor_y);
+        //$this->new_blank_line(5, 'B', 0.5);
         $this->new_blank_line(5, '', 0.5);
 
         $this->PDF->SetDrawColor(169, 169, 169);
@@ -407,24 +430,27 @@ class Ticket
 
         $this->PDF->SetDash();
         $this->PDF->SetDrawColor(0, 0, 0);
-        $this->PDF->Line(35, 40, 35, 10);
+        $this->PDF->Line(35, 75, 35, 105);
 
         $this->PDF->Cell(0, 5, '', '', 1);
 
         $this->PDF->SetDash(1, 1);
         $this->PDF->SetDrawColor(169, 169, 169);
-        $this->PDF->Line(35, 70, 155, 70);
+
+        $this->cursor_y = 70;
+
+        $this->PDF->Line(35, $this->cursor_y, 155, $this->cursor_y);
         $this->PDF->SetDash();
         $this->PDF->SetDrawColor(0, 0, 0);
 
         $this->PDF->SetTextColor(169, 169, 169);
         $this->PDF->SetFont('Helvetica', 'B', 9);
-        $this->PDF->TextWithRotation(45, 35, 'STAPLE/CUP', 90);
+        $this->PDF->TextWithRotation(45, $this->cursor_y + 30, 'STAPLE/CUP', 90);
 
         $this->PDF->SetFont('Helvetica', 'B', 7);
-        $this->PDF->Text(63, 15, 'DETALLES');
+        $this->PDF->Text(63, $this->cursor_y + 10, 'DETALLES');
         $this->PDF->SetDrawColor(169, 169, 169);
-        $this->PDF->Line(62, 17, 145, 17);
+        $this->PDF->Line(62, $this->cursor_y + 12, 145, $this->cursor_y + 12);
 
         $this->PDF->SetTextColor(0, 0, 0);
         $this->PDF->SetFont('Helvetica', 'B', 14);
@@ -438,100 +464,52 @@ class Ticket
          $this->PDF->SetXY(64, 32);
          $this->PDF->WriteText('<12. 15:00> O <' . utf8_decode('ALMUERZO: £ 5,14') . '>');*/
 
-        $this->PDF->SetXY(64, 40);
+        $this->PDF->SetXY(64, $this->cursor_y + 35);
         $this->PDF->SetDrawColor(169, 169, 169);
         $this->PDF->SetTextColor(169, 169, 169);
         $this->PDF->SetFont('Helvetica', 'B', 7);
-        $this->PDF->Cell(82, 5, 'NOTAS', 'LTR', 1);
-        $this->PDF->SetXY(64, 40);
+        $this->PDF->Cell(82, 5, 'NOTAS', 'LR', 1);
+        $this->PDF->SetXY(64, $this->cursor_y + 35);
         $this->PDF->Cell(82, 20, '', 1);
 
-        $this->PDF->SetXY(35, 70);
+       // $this->PDF->SetXY(35, 70);
 
-        $this->cursor_x = 35;
-        $this->cursor_y = 70;
+       // $this->cursor_x = 35;
+       // $this->cursor_y = 70;
 
-        //render
-
+        //render details text
         $this->render_details(FALSE);
+
+        $this->PDF->SetDash(1, 1);
+        $this->PDF->SetDrawColor(169, 169, 169);
+        $this->PDF->Line(35, $this->cursor_y+= 65, 155, $this->cursor_y);
+        $this->PDF->SetDash(0, 0);
+        $this->PDF->SetDrawColor(0, 0, 0);
+
+         $this->cursor_x = 35;
+         $this->cursor_y = 70;
+
 
     }
 
     private function generate_second_section()
     {
+
+        $this->PDF->SetXY(40,$this->cursor_y);
+
         $this->PDF->SetDrawColor(0, 0, 0);
         $this->PDF->Cell(120, 5, '', '', 1, 1);
 
         $this->PDF->SetLineWidth(2);
         $this->PDF->Line(40, 75, 150, 75);
 
-        //border
-
-        /*$border_length = 12 + count($this->productos) * 12;
-
-        $this->PDF->SetLineWidth(0.5);
-        for ($i = 0; $i < $border_length; $i++) {
-            $this->PDF->Cell(120, 10, '', 'LR', 1, 1);
-        }*/
-
         $this->PDF->SetTextColor(0, 0, 0);
-        $sample_text = '';
-
-        // ----------------------------------------------- old title ----------------------------------------------------
-        /*  $test1 = array();
-          $test1['bullet'] = chr(149);
-          $test1['margin'] = '';
-          $test1['indent'] = 0;
-          $test1['spacer'] = 0;
-          $test1['text'] = array();
-
-          $test2['bullet'] = chr(149);
-          $test2['margin'] = '';
-          $test2['indent'] = 0;
-          $test2['spacer'] = 0;
-          $test2['text'] = array();
-
-          $test1['text'][0] = $sample_text;
-          $test2['text'][0] = '';
-
-          $distance_points = 40;
-          $this->PDF->SetXY($distance_points, 63);
-          $this->PDF->SetFont('Helvetica', 'B', 28);
-          $this->PDF->MultiCellBltArray(60, 46, $test1);
-
-          // Title of the ticket
-          /*$this->PDF->SetFont('Helvetica', '', 20);
-          $this->PDF->Text(90, 88, '&');
-          $this->PDF->SetFont('Helvetica', 'B', 30);
-          $this->PDF->Text(96, 89, 'BUTTER');
-
-         // $this->PDF->SetXY($distance_points + 8, 83);
-         // $this->PDF->WriteText('<BREAD> & <BUTTER>');
-         // $this->PDF->WriteText($this->title);
-
-          $this->PDF->SetFont('Helvetica', 'B', 30);
-          $this->PDF->SetXY(140, 81);
-          $this->PDF->MultiCellBltArray(10, 10, $test2);*/
-//----------------------------------------------------- old title ---------------------------------------------------
-
 
         $this->PDF->SetXY(140, 90);
         $this->PDF->SetLineWidth(1);
         $this->PDF->Line(45, 95, 143, 95);
 
         $this->PDF->SetFont('Helvetica', '', 10);
-        //$this->PDF->SetXY(140,100);
-
-       //----------------------------------------- old address --------------------------------------------
-        /* $this->PDF->SetXY(53, 99);
-        $this->PDF->WriteText('32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
-
-        $this->PDF->SetXY(50, 104);
-        $this->PDF->WriteText('BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
-        */
-
-        //$this->PDF->Text(53, 103, '32 GREAT EASTERN STREET, LONDON, EC2A 4RQ');
-        //$this->PDF->Text(50, 108, 'BREADBUTTER.COM | 020 8888 8888 | VAT 333 3333 33');
 
         $this->PDF->SetLineWidth(2);
         $this->PDF->Line(40, 114, 150, 114);
@@ -561,25 +539,6 @@ class Ticket
         $this->PDF->TextWithRotation(43, 158, 'PRICE', 15);
         $this->PDF->TextWithRotation(45, 165, 'FACT!', 15);
 
-
-        /*$this->PDF->SetFont('Helvetica', '', 11);
-        $this->PDF->SetXY(65, 165);
-        $this->PDF->Cell(180, 5, 'IN ', '0');
-        $this->PDF->SetFont('Helvetica', 'B', 11);
-        $this->PDF->SetXY(70, 165);
-        +$this->PDF->Cell(190, 5, '514', '0');
-        $this->PDF->SetFont('Helvetica', '', 11);
-        $this->PDF->SetXY(77, 165);
-        $this->PDF->Cell(203, 5, 'AD, VITALIUS LEADS A ', '0');
-        $this->PDF->SetXY(58, 170);
-        $this->PDF->Cell(170, 5, 'REBELLION IN THE BIZANTINE EMPIRE.', '0');*/
-
-       /* $this->PDF->SetFont('Helvetica', '', 12);
-        $this->PDF->SetXY(67, 165);
-        $this->PDF->WriteText('IN <514>AD, VITALIUS LEADS A');
-        $this->PDF->SetXY(56, 172);
-        $this->PDF->WriteText('REBELLION IN THE BIZANTINE EMPIRE.');
-       */
 
         $this->PDF->SetLineWidth(0.5);
         $this->PDF->SetXY(55,163);
@@ -955,7 +914,7 @@ class Ticket
 
         $this->PDF->SetDrawColor(0, 0, 0);
         $this->PDF->SetTextColor(0, 0, 0);
-        $this->PDF->SetXY(63, 18);
+        $this->PDF->SetXY(63, $this->cursor_y + 13);
         $this->PDF->SetStyle2("b", "Helvetica", "B", $this->details_font_size, "0,0,0");
         $this->PDF->SetFont('Helvetica', '', $this->details_font_size);
         $this->PDF->MultiCellTag(83, 7, $this->details, $border, $this->details_align, 0);
@@ -995,11 +954,13 @@ class Ticket
 
     public function render_ticket_pdf()
     {
+
+        $this->generate_logo_section();
         $this->generate_first_section();
         $this->generate_second_section();
-        $this->generate_products();
-        $this->generate_third_section();
-        $this->generate_fourth_section();
+       // $this->generate_products();
+       // $this->generate_third_section();
+        //$this->generate_fourth_section();
         $this->PDF->Output('I', 'ticket_temp.pdf');
 
     }
