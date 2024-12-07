@@ -86,7 +86,7 @@ class TicketGenerator extends CI_Controller
 
         //set title
 
-        $pdf->set_url_logo('');
+        $pdf->set_url_logo('assets/img/logo2.png');
 
         $pdf->set_details('<b>MONDAY</b> 15/04/2011,      <b>MASTERCARD *3452, EXP 04/13,   </b> <b>12.15:00PM</b> OR ' . utf8_decode('<b>LUCHTIME, £5.14</b>'), 14, 'L');
         $pdf->set_title(' <b>BREAD</b>    <b1>&</b1>     <b>BUTTER</b> ', 30, 'C');
@@ -96,10 +96,6 @@ class TicketGenerator extends CI_Controller
         $pdf->set_price_phrase('IN <b>514</b>AD, VITALIUS LEADS A REBELLION IN THE BIZANTINE EMPIRE.');
         $pdf->set_rda_percent(rand(50,100).'%');
         $pdf->set_news('The <b>Nice Gallery</b> on <b>Great Eastern Street</b> is holding its opening night from 6pm. <b>(bit.ly/6h23b)</b>',13);
-
-
-
-
 
         $pdf->render_ticket_pdf();
 

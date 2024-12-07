@@ -156,6 +156,7 @@ class Ticket
 
     public function set_url_logo($url_image_logo)
     {
+
         $this->url_image_logo = $url_image_logo;
     }
 
@@ -368,7 +369,7 @@ class Ticket
         // $this->new_blank_line(5, '', 0.5);
         $this->PDF->Cell(120, 65, '', 'LTR', 1);
 
-        $this->PDF->Image('assets/img/logo2.png', 60, $this->cursor_y + 5, 70, 50);
+        $this->PDF->Image($this->url_image_logo, 60, $this->cursor_y + 5, 70, 50);
 
     }
 
