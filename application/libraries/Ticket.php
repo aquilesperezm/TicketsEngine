@@ -1,6 +1,7 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 require_once('Fpdf.php');
+require_once('qrcode/qrcode.class.php');
 
 class Ticket
 {
@@ -153,11 +154,13 @@ class Ticket
 
     }
 
-    public function set_url_logo($url_image_logo){
+    public function set_url_logo($url_image_logo)
+    {
         $this->url_image_logo = $url_image_logo;
     }
 
-    public function get_url_logo(){
+    public function get_url_logo()
+    {
         return $this->url_image_logo;
     }
 
@@ -208,7 +211,7 @@ class Ticket
 
     }
 
-    public function set_address($address,$font_size = 12,$align = 'L')
+    public function set_address($address, $font_size = 12, $align = 'L')
     {
         $this->address = $address;
         $this->address_fontsize = $font_size;
@@ -356,20 +359,23 @@ class Ticket
     }
 
 
-    private function generate_logo_section(){
+    private function generate_logo_section()
+    {
 
 
         $this->PDF->SetDrawColor(0, 0, 0);
         $this->new_blank_line(5, 'B', 0.5);
-       // $this->new_blank_line(5, '', 0.5);
-        $this->PDF->Cell(120,65,'','LTR',1);
+        // $this->new_blank_line(5, '', 0.5);
+        $this->PDF->Cell(120, 65, '', 'LTR', 1);
+
+        $this->PDF->Image('assets/img/logo2.png', 60, $this->cursor_y + 5, 70, 50);
 
     }
 
     private function generate_first_section()
     {
         $this->cursor_y = 70;
-        $this->PDF->SetXY(40,$this->cursor_y);
+        $this->PDF->SetXY(40, $this->cursor_y);
         //$this->new_blank_line(5, 'B', 0.5);
         $this->new_blank_line(5, '', 0.5);
 
@@ -472,22 +478,22 @@ class Ticket
         $this->PDF->SetXY(64, $this->cursor_y + 35);
         $this->PDF->Cell(82, 20, '', 1);
 
-       // $this->PDF->SetXY(35, 70);
+        // $this->PDF->SetXY(35, 70);
 
-       // $this->cursor_x = 35;
-       // $this->cursor_y = 70;
+        // $this->cursor_x = 35;
+        // $this->cursor_y = 70;
 
         //render details text
         $this->render_details(FALSE);
 
         $this->PDF->SetDash(1, 1);
         $this->PDF->SetDrawColor(169, 169, 169);
-        $this->PDF->Line(35, $this->cursor_y+= 65, 155, $this->cursor_y);
+        $this->PDF->Line(35, $this->cursor_y += 65, 155, $this->cursor_y);
         $this->PDF->SetDash(0, 0);
         $this->PDF->SetDrawColor(0, 0, 0);
 
-         $this->cursor_x = 35;
-         $this->cursor_y = 70;
+        $this->cursor_x = 35;
+        $this->cursor_y = 70;
 
 
     }
@@ -495,7 +501,7 @@ class Ticket
     private function generate_second_section()
     {
 
-        $this->PDF->SetXY(40,$this->cursor_y);
+        $this->PDF->SetXY(40, $this->cursor_y);
 
         $this->PDF->SetDrawColor(0, 0, 0);
         $this->PDF->Cell(120, 5, '', '', 1, 1);
@@ -528,17 +534,17 @@ class Ticket
         $this->PDF->Image('assets/img/banner11.png', 65, $this->cursor_y + 25);
 
         $total = 0;
-          foreach($this->products as $p){
-              $total += $p['precio'];
-          }
+        foreach ($this->products as $p) {
+            $total += $p['precio'];
+        }
 
 
         $this->PDF->SetFont('Helvetica', 'B', 36);
-        $this->PDF->Text(78, $this->cursor_y + 48, utf8_decode('£'.($total + $this->iva)));
+        $this->PDF->Text(78, $this->cursor_y + 48, utf8_decode('£' . ($total + $this->iva)));
         $this->PDF->SetFont('Helvetica', '', 10);
         $this->PDF->Text(73, $this->cursor_y + 60, 'INCLUYE IVA DE ');
         $this->PDF->SetFont('Helvetica', 'BU', 10);
-        $this->PDF->Text(103, $this->cursor_y + 60, utf8_decode('£'.$this->iva));
+        $this->PDF->Text(103, $this->cursor_y + 60, utf8_decode('£' . $this->iva));
 
         $this->PDF->Image('assets/img/banner22.png', 37, $this->cursor_y + 55);
 
@@ -548,10 +554,10 @@ class Ticket
 
 
         $this->PDF->SetLineWidth(0.5);
-        $this->PDF->SetXY(55,$this->cursor_y + 70);
+        $this->PDF->SetXY(55, $this->cursor_y + 70);
         $this->PDF->Setfont('Helvetica', '', 13);
-        $this->PDF->SetStyle2('b','Helvetica','B',13,'0,0,0');
-        $this->PDF->MultiCellTag(85,6,$this->price_phrase,0,'C');
+        $this->PDF->SetStyle2('b', 'Helvetica', 'B', 13, '0,0,0');
+        $this->PDF->MultiCellTag(85, 6, $this->price_phrase, 0, 'C');
 
 
         //$this->PDF->SetXY(60,180);
@@ -569,20 +575,20 @@ class Ticket
         $this->PDF->SetFont('Helvetica', '', 12);
 
         // $block_y = 195;
-       // $this->cursor_y = 195;
+        // $this->cursor_y = 195;
         $block_x = 40;
 
         $min = 0;
         $max = 255;
 
-       /* $colors = array(
-            'Sales 1' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-            'Sales 2' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-            'Sales 3' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-            'Sales 4' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-            'Sales 5' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-            'Sales 6' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-        );*/
+        /* $colors = array(
+             'Sales 1' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+             'Sales 2' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+             'Sales 3' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+             'Sales 4' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+             'Sales 5' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+             'Sales 6' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
+         );*/
 
 
         for ($i = 0; $i < count($this->products); $i++) {
@@ -716,9 +722,9 @@ class Ticket
         $this->PDF->SetXY(40, $this->cursor_y + 3);
         $this->PDF->Rotate(2);
         $this->PDF->SetFont('Helvetica', '', $this->news_fontsize);
-        $this->PDF->SetStyle2('b','Helvetica','B',$this->news_fontsize, '0,0,0');
+        $this->PDF->SetStyle2('b', 'Helvetica', 'B', $this->news_fontsize, '0,0,0');
 
-        $this->PDF->MultiCellTag(110,5,$this->news,0,'C',FALSE);
+        $this->PDF->MultiCellTag(110, 5, $this->news, 0, 'C', FALSE);
         //$this->PDF->MultiCellTag(110,5,'The <b>Nice Gallery</b> on <b>Great Eastern Street</b> is holding its opening night from 6pm. <b>(bit.ly/6h23b)</b>',1,'C',FALSE);
 
         $this->PDF->Rotate(0);
@@ -751,9 +757,70 @@ class Ticket
         $this->PDF->Line(35, $this->cursor_y + 24, 155, $this->cursor_y + 24);
         $this->PDF->SetDash();
 
-        $this->PDF->Image('assets/img/banner5.png', 45, $this->cursor_y + 20);
+        //  $this->PDF->Image('assets/img/banner5.png', 45, $this->cursor_y + 20);
 
         $this->cursor_y += 25;
+
+    }
+
+    /**
+     * @param $params array
+     * @example $params = [
+     *              'fecha'=>'05-12-2024',
+     *              'hora'=>'7:18AM',
+     *              'numero_referencia'=>'842129-511',
+     *              'numero_tickets=>'842-511',
+     *              'monto'=>8541.412,
+     *              'url'=>'https://www.lecaroz.com
+     *              ]
+     *
+     *
+     * */
+    public function generate_factura_data($params)
+    {
+
+        $this->PDF->Text(70, $this->cursor_y + 5, utf8_decode('Datos de Facturación'));
+
+        //data
+        $this->PDF->SetFont('Helvetica', 'B', 12);
+        $this->PDF->Text(40, $this->cursor_y + 15, utf8_decode('Fecha: '));
+        $this->PDF->SetFont('Helvetica', '', 12);
+        $this->PDF->Text(55, $this->cursor_y + 15, utf8_decode($params['fecha']));
+
+        $this->PDF->SetFont('Helvetica', 'B', 12);
+        $this->PDF->Text(40, $this->cursor_y + 23, utf8_decode('Número de Referencia: '));
+        $this->PDF->SetFont('Helvetica', '', 12);
+        $this->PDF->Text(88, $this->cursor_y + 23, utf8_decode($params['numero_referencia']));
+
+        $this->PDF->SetFont('Helvetica', 'B', 12);
+        $this->PDF->Text(40, $this->cursor_y + 31, utf8_decode('Número del Tickets: '));
+        $this->PDF->SetFont('Helvetica', '', 12);
+        $this->PDF->Text(88, $this->cursor_y + 31, utf8_decode($params['numero_tickets']));
+
+        $this->PDF->SetFont('Helvetica', 'B', 12);
+        $this->PDF->Text(40, $this->cursor_y + 39, utf8_decode('Monto Total: '));
+        $this->PDF->SetFont('Helvetica', '', 12);
+        $this->PDF->Text(88, $this->cursor_y + 39, utf8_decode('£'.$params['monto']));
+
+        $qrcode = new QRcode(json_encode($params), 'H'); // nivel de error: L, M, Q, H
+        $qrcode->displayFPDF($this->PDF, 70, $this->cursor_y + 47, 50);
+
+        $this->PDF->SetFont('Helvetica', 'I', 13);
+        $this->PDF->SetXY(35, $this->cursor_y + 102);
+        $this->PDF->MultiCell(0, 8, utf8_decode('Si usted require la factura por favor ingrese a ' . $params['url']), 0, 'C');
+
+        $this->PDF->SetDrawColor(0, 0, 0);
+        $this->PDF->SetXY(35, $this->cursor_y);
+        $this->PDF->Cell(0, 120, '', 'LR', 1);
+
+        $this->PDF->SetDash(1, 1);
+        $this->PDF->SetDrawColor(169, 169, 169);
+        $this->PDF->Line(35, $this->cursor_y + 118, 155, $this->cursor_y + 118);
+        $this->PDF->SetDash();
+
+        $this->PDF->Image('assets/img/banner5.png', 45, $this->cursor_y + 114);
+
+        $this->cursor_y += 120;
 
     }
 
@@ -768,7 +835,7 @@ class Ticket
     /**
      * @param mixed $news
      */
-    public function set_news($news,$fontsize)
+    public function set_news($news, $fontsize)
     {
         $this->news = $news;
         $this->news_fontsize = $fontsize;
@@ -808,6 +875,7 @@ class Ticket
 
     private function generate_fourth_section()
     {
+
 
         if (count($this->products) >= 5 && count($this->products) <= 8)
             $this->addNewPage(35, 0);
@@ -965,7 +1033,17 @@ class Ticket
         $this->generate_first_section();
         $this->generate_second_section();
         $this->generate_products();
-       $this->generate_third_section();
+        $this->generate_third_section();
+
+        $params = array('fecha'=>'05-12-2024',
+                   'hora'=>'7:18AM',
+                   'numero_referencia'=>'842129-511',
+                   'numero_tickets'=>'842-511',
+                   'monto'=>'8541.412',
+                  'url'=>'https://www.lecaroz.com');
+
+        $this->generate_factura_data($params);
+
         $this->generate_fourth_section();
         $this->PDF->Output('I', 'ticket_temp.pdf');
 
