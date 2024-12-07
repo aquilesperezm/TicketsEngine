@@ -14,6 +14,11 @@ class Ticket
     private $order_number;
     private $client_number;
     private $iva;
+
+    private $monto;
+
+    private $factura_params;
+
     private $price_phrase;
     private $offer_title;
     private $offer_text;
@@ -539,6 +544,8 @@ class Ticket
             $total += $p['precio'];
         }
 
+        $this->monto = $total;
+
 
         $this->PDF->SetFont('Helvetica', 'B', 36);
         $this->PDF->Text(78, $this->cursor_y + 48, utf8_decode('£' . ($total + $this->iva)));
@@ -766,18 +773,17 @@ class Ticket
 
     /**
      * @param $params array
-     * @example $params = [
-     *              'fecha'=>'05-12-2024',
-     *              'hora'=>'7:18AM',
-     *              'numero_referencia'=>'842129-511',
-     *              'numero_tickets=>'842-511',
-     *              'monto'=>8541.412,
-     *              'url'=>'https://www.lecaroz.com
-     *              ]
+     * @example $params = array(
+     *              'fecha' => '05-12-2024',
+     *              'hora' => '7:18AM',
+     *              'numero_referencia' => '842129-511',
+     *              'numero_tickets' => '842-511',
+     *              'url' => 'https://www.lecaroz.com'
+     *              )
      *
      *
      * */
-    public function generate_factura_data($params)
+    private function generate_factura_data()
     {
 
         $this->PDF->Text(70, $this->cursor_y + 5, utf8_decode('Datos de Facturación'));
@@ -786,29 +792,34 @@ class Ticket
         $this->PDF->SetFont('Helvetica', 'B', 12);
         $this->PDF->Text(40, $this->cursor_y + 15, utf8_decode('Fecha: '));
         $this->PDF->SetFont('Helvetica', '', 12);
-        $this->PDF->Text(55, $this->cursor_y + 15, utf8_decode($params['fecha']));
+        $this->PDF->Text(55, $this->cursor_y + 15, utf8_decode($this->factura_params['fecha']));
+
+        $this->PDF->SetFont('Helvetica', 'B', 12);
+        $this->PDF->Text(90, $this->cursor_y + 15, utf8_decode('Hora: '));
+        $this->PDF->SetFont('Helvetica', '', 12);
+        $this->PDF->Text(105, $this->cursor_y + 15, utf8_decode($this->factura_params['hora']));
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
         $this->PDF->Text(40, $this->cursor_y + 23, utf8_decode('Número de Referencia: '));
         $this->PDF->SetFont('Helvetica', '', 12);
-        $this->PDF->Text(88, $this->cursor_y + 23, utf8_decode($params['numero_referencia']));
+        $this->PDF->Text(90, $this->cursor_y + 23, utf8_decode($this->factura_params['numero_referencia']));
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
         $this->PDF->Text(40, $this->cursor_y + 31, utf8_decode('Número del Tickets: '));
         $this->PDF->SetFont('Helvetica', '', 12);
-        $this->PDF->Text(88, $this->cursor_y + 31, utf8_decode($params['numero_tickets']));
+        $this->PDF->Text(90, $this->cursor_y + 31, utf8_decode($this->factura_params['numero_tickets']));
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
         $this->PDF->Text(40, $this->cursor_y + 39, utf8_decode('Monto Total: '));
         $this->PDF->SetFont('Helvetica', '', 12);
-        $this->PDF->Text(88, $this->cursor_y + 39, utf8_decode('£'.$params['monto']));
+        $this->PDF->Text(90, $this->cursor_y + 39, utf8_decode('£' . $this->monto));
 
-        $qrcode = new QRcode(json_encode($params), 'H'); // nivel de error: L, M, Q, H
+        $qrcode = new QRcode(json_encode($this->factura_params), 'H'); // nivel de error: L, M, Q, H
         $qrcode->displayFPDF($this->PDF, 70, $this->cursor_y + 47, 50);
 
         $this->PDF->SetFont('Helvetica', 'I', 13);
         $this->PDF->SetXY(35, $this->cursor_y + 102);
-        $this->PDF->MultiCell(0, 8, utf8_decode('Si usted require la factura por favor ingrese a ' . $params['url']), 0, 'C');
+        $this->PDF->MultiCell(0, 8, utf8_decode('Si usted require la factura por favor ingrese a ' . $this->factura_params['url']), 0, 'C');
 
         $this->PDF->SetDrawColor(0, 0, 0);
         $this->PDF->SetXY(35, $this->cursor_y);
@@ -823,6 +834,24 @@ class Ticket
 
         $this->cursor_y += 120;
 
+    }
+
+    /**
+     * @param $params array
+     * @example $params = [
+     *              'fecha'=>'05-12-2024',
+     *              'hora'=>'7:18AM',
+     *              'numero_referencia'=>'842129-511',
+     *              'numero_tickets=>'842-511',
+     *              'monto'=>8541.412,
+     *              'url'=>'https://www.lecaroz.com
+     *              ]
+     *
+     *
+     * */
+    public function set_factura($params)
+    {
+        $this->factura_params = $params;
     }
 
     /**
@@ -1035,15 +1064,7 @@ class Ticket
         $this->generate_second_section();
         $this->generate_products();
         $this->generate_third_section();
-
-        $params = array('fecha'=>'05-12-2024',
-                   'hora'=>'7:18AM',
-                   'numero_referencia'=>'842129-511',
-                   'numero_tickets'=>'842-511',
-                   'monto'=>'8541.412',
-                  'url'=>'https://www.lecaroz.com');
-
-        $this->generate_factura_data($params);
+        $this->generate_factura_data();
 
         $this->generate_fourth_section();
         $this->PDF->Output('I', 'ticket_temp.pdf');
