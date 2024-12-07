@@ -19,7 +19,7 @@ class TicketGenerator extends CI_Controller
         parent::__construct();
 
         $params = array('P', 'in');
-        $this->load->library('fpdf', $params);
+        $this->load->library('ticket/fpdf/fpdf');
 
         $this->FPDF = $this->fpdf;
         $this->pound_sterling = substr('£', 1, 1);
@@ -39,52 +39,89 @@ class TicketGenerator extends CI_Controller
     public function generatepdf()
     {
 
-        $this->load->library('ticket');
+        $this->load->library('ticket/ticket');
         $pdf = $this->ticket;
 
+        $products_names = [
+            "Espresso",
+            "Americano",
+            "Latte",
+            "Cappuccino",
+            "Mocha",
+            "Flat White",
+            "Macchiato",
+            "Cold Brew",
+            "Iced Coffee",
+            "Nitro Coffee",
+            "Chai Latte",
+            "Herbal Tea",
+            "Green Tea",
+            "Black Tea",
+            "Matcha Latte",
+            "Hot Chocolate",
+            "Affogato",
+            "Frappe",
+            "Smoothie",
+            "Muffin",
+            "Croissant",
+            "Scone",
+            "Biscotti",
+            "Danish Pastry",
+            "Bagel",
+            "Sandwich",
+            "Panini",
+            "Salad",
+            "Quiche",
+            "Cookie",
+            "Brownie",
+            "Cheesecake",
+            "Tiramisu",
+            "Fruit Tart",
+            "Energy Bar",
+            "Granola",
+            "Yogurt Parfait",
+            "Oatmeal",
+            "Breakfast Burrito",
+            "Avocado Toast",
+            "Cheese Platter",
+            "Charcuterie Board",
+            "Almond Milk",
+            "Oat Milk",
+            "Coconut Milk",
+            "Flavored Syrups",
+            "Whipped Cream",
+            "Ice Cream",
+            "Seasonal Specials",
+            "Bottled Water"
+        ];
 
+        $cantidad_productos = 2;
 
-        $pdf->add_product([
-            'nombre' => 'Ham & Cheese Baguette',
-            'cantidad' => 1,
-            'precio' => $pdf->float_rand(1.0, 10.0, 2),
-            'hora' => '2pm',
-            'graph_message' => 'Which often sells out by ',
-            'rda' => 57,
-            'calorias' => rand(100, 200),
-            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
-            'sales' => [
-                'Sales 1' => [
-                    '01-05' => rand(1, 30),
-                    '05-10' => rand(1, 30),
-                    '10-15' => rand(1, 30),
-                    '15-20' => rand(1, 30),
-                    '20-25' => rand(1, 30),
-                    '25-30' => rand(1, 30)
+        //adding random products
+        for ($i = 0; $i < $cantidad_productos; $i++) {
+
+            $pdf->add_product([
+                'nombre' => $products_names[rand(0,49)],
+                'cantidad' => rand(1,5),
+                'precio' => $pdf->float_rand(1.0, 10.0, 2),
+                'hora' => rand(1,12).'pm',
+                'graph_message' => 'Which often sells out by ',
+                'rda' => 57,
+                'calorias' => rand(100, 200),
+                'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
+                'sales' => [
+                    'Sales 1' => [
+                        '01-05' => rand(1, 30),
+                        '05-10' => rand(1, 30),
+                        '10-15' => rand(1, 30),
+                        '15-20' => rand(1, 30),
+                        '20-25' => rand(1, 30),
+                        '25-30' => rand(1, 30)
+                    ]
                 ]
-            ]
-        ]);
+            ]);
 
-        $pdf->add_product([
-            'nombre' => 'Chicken Caesar Salad',
-            'cantidad' => 1,
-            'precio' => $pdf->float_rand(1.0, 10.0, 2),
-            'hora' => '1pm',
-            'graph_message' => 'Which often sells out by ',
-            'rda' => 57,
-            'calorias' => rand(100, 200),
-            'graph_color' => ['Sales 1' => [rand(1, 255), rand(1, 255), rand(1, 255)]],
-            'sales' => [
-                'Sales 1' => [
-                    '01-05' => rand(1, 30),
-                    '05-10' => rand(1, 30),
-                    '10-15' => rand(1, 30),
-                    '15-20' => rand(1, 30),
-                    '20-25' => rand(1, 30),
-                    '25-30' => rand(1, 30)
-                ]
-            ]
-        ]);
+        }
 
         $params = array(
             'fecha' => '05-12-2024',

@@ -1,5 +1,8 @@
 <?php
-	$msg = isset($_GET['msg']) ? $_GET['msg'] : '';
+
+use qrcode\QRcode;
+
+$msg = isset($_GET['msg']) ? $_GET['msg'] : '';
 	if (!$msg) $msg = "Le site du spipu\r\nhttp://spipu.net/";
 
 

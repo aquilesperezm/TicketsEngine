@@ -1,6 +1,7 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-require_once('Fpdf.php');
+require_once('fpdf/Fpdf.php');
 require_once('qrcode/qrcode.class.php');
 
 class Ticket
@@ -541,14 +542,13 @@ class Ticket
 
         $total = 0;
         foreach ($this->products as $p) {
-            $total += $p['precio'];
+            $total += $p['precio'] * $p['cantidad'];
         }
 
-        $this->monto = $total;
-
+        $this->monto = $total + $this->iva;
 
         $this->PDF->SetFont('Helvetica', 'B', 36);
-        $this->PDF->Text(78, $this->cursor_y + 48, utf8_decode('£' . ($total + $this->iva)));
+        $this->PDF->Text(78, $this->cursor_y + 48, utf8_decode('£' . ($this->monto)));
         $this->PDF->SetFont('Helvetica', '', 10);
         $this->PDF->Text(73, $this->cursor_y + 60, 'INCLUYE IVA DE ');
         $this->PDF->SetFont('Helvetica', 'BU', 10);

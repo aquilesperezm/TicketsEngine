@@ -1,5 +1,8 @@
 <?php
-	$msg = isset($_GET['msg']) ? $_GET['msg'] : '';
+
+use qrcode\QRcode;
+
+$msg = isset($_GET['msg']) ? $_GET['msg'] : '';
 	if (!$msg) $msg = "Le site du spipu\r\nhttp://spipu.net/";
 
 	$err = isset($_GET['err']) ? $_GET['err'] : '';
@@ -55,13 +58,13 @@ table.qr td.on
 				<input type="submit" value="Afficher">
 			</form>
 			<hr>
-			Génération d'un tableau HTML :<br> 
+			Gï¿½nï¿½ration d'un tableau HTML :<br> 
 <?php
 	$qrcode = new QRcode(utf8_encode($msg), $err);
 	$qrcode->displayHTML();
 ?>
 			<br>
-			Génération d'une image PNG : <br>
+			Gï¿½nï¿½ration d'une image PNG : <br>
 			<img src="./image.php?msg=<?php echo urlencode($msg); ?>&amp;err=<?php echo urlencode($err); ?>" alt="generation qr-code" style="border: solid 1px black;">
 		</center>
 	</body>
