@@ -181,7 +181,7 @@ class Ticket
     private function addNewPage($cursor_x = 35, $cursor_y = 5)
     {
 
-        $this->PDF->AddPage('P', array(190, 550));
+        $this->PDF->AddPage('P', array(190, 650));
         $this->cursor_y = $cursor_y;
         $this->cursor_x = $cursor_x;
 
@@ -501,24 +501,31 @@ class Ticket
         $this->PDF->Cell(120, 5, '', '', 1, 1);
 
         $this->PDF->SetLineWidth(2);
-        $this->PDF->Line(40, 75, 150, 75);
+        $this->PDF->Line(40, $this->cursor_y + 70, 150, $this->cursor_y + 70);
 
         $this->PDF->SetTextColor(0, 0, 0);
 
+        $this->cursor_y += 90;
+
         $this->PDF->SetXY(140, 90);
         $this->PDF->SetLineWidth(1);
-        $this->PDF->Line(45, 95, 143, 95);
+        $this->PDF->Line(45, $this->cursor_y, 143, $this->cursor_y);
+
+        $this->render_title(FALSE);
+        $this->render_address(FALSE);
 
         $this->PDF->SetFont('Helvetica', '', 10);
 
         $this->PDF->SetLineWidth(2);
-        $this->PDF->Line(40, 114, 150, 114);
-        $this->PDF->SetFont('Helvetica', '', 8);
-        $this->PDF->Text(40, 119, 'NO. ORDEN: ');
-        $this->PDF->SetFont('Helvetica', 'B', 8);
-        $this->PDF->Text(57, 119, $this->order_number);
+        $this->PDF->Line(40, $this->cursor_y + 20, 150, $this->cursor_y + 20);
 
-        $this->PDF->Image('assets/img/banner11.png', 65, 117);
+
+        $this->PDF->SetFont('Helvetica', '', 8);
+        $this->PDF->Text(40, $this->cursor_y + 25, 'NO. ORDEN: ');
+        $this->PDF->SetFont('Helvetica', 'B', 8);
+        $this->PDF->Text(58, $this->cursor_y + 25, $this->order_number);
+
+        $this->PDF->Image('assets/img/banner11.png', 65, $this->cursor_y + 25);
 
         $total = 0;
           foreach($this->products as $p){
@@ -527,21 +534,21 @@ class Ticket
 
 
         $this->PDF->SetFont('Helvetica', 'B', 36);
-        $this->PDF->Text(78, 140, utf8_decode('£'.($total + $this->iva)));
+        $this->PDF->Text(78, $this->cursor_y + 48, utf8_decode('£'.($total + $this->iva)));
         $this->PDF->SetFont('Helvetica', '', 10);
-        $this->PDF->Text(73, 153, 'INCLUYE IVA DE ');
+        $this->PDF->Text(73, $this->cursor_y + 60, 'INCLUYE IVA DE ');
         $this->PDF->SetFont('Helvetica', 'BU', 10);
-        $this->PDF->Text(103, 153, utf8_decode('£'.$this->iva));
+        $this->PDF->Text(103, $this->cursor_y + 60, utf8_decode('£'.$this->iva));
 
-        $this->PDF->Image('assets/img/banner22.png', 37, 147);
+        $this->PDF->Image('assets/img/banner22.png', 37, $this->cursor_y + 55);
 
         $this->PDF->SetFont('Helvetica', 'B', 12);
-        $this->PDF->TextWithRotation(43, 158, 'PRICE', 15);
-        $this->PDF->TextWithRotation(45, 165, 'FACT!', 15);
+        $this->PDF->TextWithRotation(43, $this->cursor_y + 66, 'PRICE', 15);
+        $this->PDF->TextWithRotation(45, $this->cursor_y + 73, 'FACT!', 15);
 
 
         $this->PDF->SetLineWidth(0.5);
-        $this->PDF->SetXY(55,163);
+        $this->PDF->SetXY(55,$this->cursor_y + 70);
         $this->PDF->Setfont('Helvetica', '', 13);
         $this->PDF->SetStyle2('b','Helvetica','B',13,'0,0,0');
         $this->PDF->MultiCellTag(85,6,$this->price_phrase,0,'C');
@@ -549,34 +556,33 @@ class Ticket
 
         //$this->PDF->SetXY(60,180);
         $this->PDF->SetFont('Helvetica', 'BU', 11);
-        $this->PDF->Text(80, 190, 'Y COMPRASTE:', 1);
+        $this->PDF->Text(80, $this->cursor_y += 100, 'Y COMPRASTE:', 1);
 
-        $this->render_title(FALSE);
-        $this->render_address(FALSE);
+
     }
 
     private function generate_products()
     {
 
         $this->PDF->SetLineWidth(0.5);
-        $this->PDF->SetXY(40, 195);
+        $this->PDF->SetXY(40, $this->cursor_y += 5);
         $this->PDF->SetFont('Helvetica', '', 12);
 
         // $block_y = 195;
-        $this->cursor_y = 195;
+       // $this->cursor_y = 195;
         $block_x = 40;
 
         $min = 0;
         $max = 255;
 
-        $colors = array(
+       /* $colors = array(
             'Sales 1' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
             'Sales 2' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
             'Sales 3' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
             'Sales 4' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
             'Sales 5' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
             'Sales 6' => array(rand($min, $max), rand($min, $max), rand($min, $max)),
-        );
+        );*/
 
 
         for ($i = 0; $i < count($this->products); $i++) {
@@ -927,7 +933,7 @@ class Ticket
         $bullet = chr(149);
         $this->PDF->SetLineWidth(0.5);
         $this->PDF->SetDrawColor(255, 0, 0);
-        $this->PDF->SetXY(35, 76);
+        $this->PDF->SetXY(35, $this->cursor_y - 20);
         $this->PDF->SetStyle2("b", "Helvetica", "B", $this->title_font_size, "0,0,0");
         $this->PDF->SetStyle2("b1", "Helvetica", "", $this->title_font_size - 10, "0,0,0");
         $this->PDF->SetFont('Helvetica', '', $this->title_font_size);
@@ -942,7 +948,7 @@ class Ticket
         $bullet = chr(149);
         $this->PDF->SetLineWidth(0.5);
         $this->PDF->SetDrawColor(255, 0, 0);
-        $this->PDF->SetXY(35, 100);
+        $this->PDF->SetXY(35, $this->cursor_y + 5);
         $this->PDF->SetStyle2("b", "Helvetica", "B", $this->address_fontsize, "0,0,0");
         $this->PDF->SetStyle2("b1", "Helvetica", "", $this->address_fontsize - 10, "0,0,0");
         $this->PDF->SetFont('Helvetica', '', $this->address_fontsize);
@@ -958,9 +964,9 @@ class Ticket
         $this->generate_logo_section();
         $this->generate_first_section();
         $this->generate_second_section();
-       // $this->generate_products();
-       // $this->generate_third_section();
-        //$this->generate_fourth_section();
+        $this->generate_products();
+       $this->generate_third_section();
+        $this->generate_fourth_section();
         $this->PDF->Output('I', 'ticket_temp.pdf');
 
     }
